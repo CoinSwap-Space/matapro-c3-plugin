@@ -1,0 +1,13 @@
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "http-server -p 3000 --cors"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

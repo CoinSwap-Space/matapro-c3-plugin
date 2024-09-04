@@ -1,0 +1,156 @@
+﻿{
+	"languageTag": "en-US",
+	"fileDescription": "Strings for Metapro Plugin.",
+	"text": {
+		"plugins": {
+			"metaproplugin": {
+				"name": "Metapro Plugin",
+				"description": "Metapro Plugin addon for Web3 connection, user management, and leaderboard integration.",
+				"help-url": "https://metapro.one/",
+			"properties": {
+					"users-service-api-url": {
+						"name": "Users Service API URL",
+						"desc": "The URL of the Users Service API used by the Metapro system."
+					},
+					"project-id": {
+						"name": "Project ID",
+						"desc": "The unique identifier for your project in Metapro."
+					},
+					"referral-settings-id": {
+						"name": "Referral Settings ID",
+						"desc": "The ID for the referral settings configured in your project."
+					},
+					"leaderboard-id": {
+						"name": "Leaderboard ID",
+						"desc": "The ID of the leaderboard used in the Metapro system."
+					},
+					"leaderboard-api-key": {
+						"name": "Leaderboard API Key",
+						"desc": "The API key required to access the leaderboard."
+					},
+					"clicker-api-url": {
+						"name": "Clicker API URL",
+						"desc": "The URL of the Clicker API used in the Metapro system."
+					}
+				},
+				"aceCategories": {
+					"products": "Products"
+				},
+				"conditions": {
+					"on-account-received": {
+						"list-name": "On Account Received",
+						"display-text": "When an account is received",
+						"description": "Triggered when the user's Ethereum account is successfully retrieved."
+					},
+					"on-user-logged-in": {
+						"list-name": "On User Logged In",
+						"display-text": "When a user is logged in",
+						"description": "Triggered when the user is successfully logged in."
+					},
+					"on-leaderboard-received": {
+						"list-name": "On Leaderboard Received",
+						"display-text": "When leaderboard data is received",
+						"description": "Triggered when leaderboard data is successfully retrieved."
+					},
+					"on-error": {
+						"list-name": "On Error",
+						"display-text": "When an error occurs",
+						"description": "Triggered when an error occurs during any plugin operation."
+					}
+				},
+				"actions": {
+					"request-account": {
+						"list-name": "Request Account",
+						"display-text": "Request account",
+						"description": "Requests the user's Ethereum account from the connected wallet."
+					},
+					"login": {
+						"list-name": "Login",
+						"display-text": "Login user with referral code {0} and rules checked {1}",
+						"description": "Logs in the user using their Ethereum account. Optionally includes a referral code and checks if rules are accepted.",
+						"params": {
+							"referral-code": {
+								"name": "Referral Code",
+								"desc": "The referral code provided by the user, if any."
+							},
+							"rules-checked": {
+								"name": "Rules Checked",
+								"desc": "Indicates whether the user has accepted the rules."
+							}
+						}
+					},
+					"request-leaderboard": {
+						"list-name": "Request Leaderboard",
+						"display-text": "Request leaderboard for level {0} with scores after {1}, scores before {2}, and limit {3}",
+						"description": "Requests leaderboard data for a specific level and score range with a defined limit.",
+						"params": {
+							"level-id": {
+								"name": "Level ID",
+								"desc": "The ID of the level for which to retrieve leaderboard data."
+							},
+							"scores-after": {
+								"name": "Scores After",
+								"desc": "The scores after this value will be included in the results."
+							},
+							"scores-before": {
+								"name": "Scores Before",
+								"desc": "The scores before this value will be included in the results."
+							},
+							"limit": {
+								"name": "Limit",
+								"desc": "The maximum number of leaderboard entries to retrieve."
+							}
+						}
+					}
+				},
+				"expressions": {
+					"get-last-error": {
+						"description": "Get the most recent error message encountered by the plugin.",
+						"translated-name": "Get Last Error",
+						"params": {}
+					},
+					"get-account": {
+						"description": "Get the current user's Ethereum account.",
+						"translated-name": "Get Account",
+						"params": {}
+					},
+					"get-avatar": {
+						"description": "Get the user's avatar URL.",
+						"translated-name": "Get Avatar",
+						"params": {}
+					},
+					"get-user-id": {
+						"description": "Get the user's unique ID.",
+						"translated-name": "Get User ID",
+						"params": {}
+					},
+					"get-username": {
+						"description": "Get the user's username.",
+						"translated-name": "Get Username",
+						"params": {}
+					},
+					"get-access-token": {
+						"description": "Get the user's Web3 access token.",
+						"translated-name": "Get Access Token",
+						"params": {}
+					},
+					"get-personal-leaderboard": {
+						"description": "Get the user's personal leaderboard data.",
+						"translated-name": "Get Personal Leaderboard",
+						"params": {}
+					},
+					"get-leaderboard": {
+						"description": "Get the general leaderboard data.",
+						"translated-name": "Get Leaderboard",
+						"params": {}
+					},
+					"get-user-position": {
+						"description": "Get the user's position on the leaderboard.",
+						"translated-name": "Get Leaderboard User Position",
+						"params": {}
+					}
+				}
+			}
+		}
+	}
+}
