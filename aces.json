@@ -20,6 +20,26 @@
         "id": "on-leaderboard-received",
         "scriptName": "OnLeaderboardReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-username-updated",
+        "scriptName": "OnUsernameUpdated",
+        "isTrigger": true
+      },
+      {
+        "id": "on-avatar-updated",
+        "scriptName": "OnAvatarUpdated",
+        "isTrigger": true
+      },
+      {
+        "id": "on-register-checked",
+        "scriptName": "OnRegisterChecked",
+        "isTrigger": true
+      },
+      {
+        "id": "on-user-score-received",
+        "scriptName": "OnUserScoreReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -53,6 +73,30 @@
         "scriptName": "UpdateScore",
         "isAsync": true,
         "params": [{ "id": "score", "type": "number" }]
+      },
+      {
+        "id": "update-username",
+        "scriptName": "UpdateUsername",
+        "isAsync": true,
+        "params": [{ "id": "username", "type": "string" }]
+      },
+      {
+        "id": "update-avatar",
+        "scriptName": "UpdateAvatar",
+        "isAsync": true,
+        "params": [{ "id": "avatar", "type": "string" }]
+      },
+      {
+        "id": "check-if-registered",
+        "scriptName": "CheckIfRegistered",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "request-user-score",
+        "scriptName": "RequestUserScore",
+        "isAsync": true,
+        "params": []
       }
     ],
     "expressions": [
@@ -110,6 +154,30 @@
         "scriptName": "GetLeaderboard",
         "highlight": true,
         "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-is-registered",
+        "expressionName": "GetIsRegistered",
+        "scriptName": "GetIsRegistered",
+        "highlight": true,
+        "returnType": "number",
+        "params": []
+      },
+      {
+        "id": "get-current-score",
+        "expressionName": "GetCurrentScore",
+        "scriptName": "GetCurrentScore",
+        "highlight": true,
+        "returnType": "number",
+        "params": []
+      },
+      {
+        "id": "get-total-score",
+        "expressionName": "GetTotalScore",
+        "scriptName": "GetTotalScore",
+        "highlight": true,
+        "returnType": "number",
         "params": []
       }
     ]

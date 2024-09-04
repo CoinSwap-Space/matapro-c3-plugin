@@ -23,4 +23,13 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonLeaderboard;
   },
+  GetIsRegistered() {
+    return Number(this._GetIsRegistered());
+  },
+  GetCurrentScore() {
+    return this._GetCurrentScore();
+  },
+  GetTotalScore() {
+    return this._GetTotalScore();
+  },
 };

@@ -52,6 +52,26 @@
             "display-text": "When leaderboard data is received",
             "description": "Triggered when leaderboard data is successfully retrieved."
           },
+          "on-username-updated": {
+            "list-name": "On Username Updated",
+            "display-text": "When username is updated",
+            "description": "Triggered when username is successfully updated."
+          },
+          "on-avatar-updated": {
+            "list-name": "On Avatar Updated",
+            "display-text": "When avatar is updated",
+            "description": "Triggered when avatar is successfully updated."
+          },
+          "on-register-checked": {
+            "list-name": "On Register Checked",
+            "display-text": "When register data is received.",
+            "description": "Triggered when successfully checked if user is registered."
+          },
+          "on-user-score-received": {
+            "list-name": "On User Score Received",
+            "display-text": "When user scores data is received.",
+            "description": "Triggered if scores data is successfully received."
+          },
           "on-error": {
             "list-name": "On Error",
             "display-text": "When an error occurs",
@@ -108,6 +128,38 @@
                 "desc": "The score value to be updated for the user."
               }
             }
+          },
+          "update-username": {
+            "list-name": "Update username",
+            "display-text": "Update username to {0}",
+            "description": "Updates username.",
+            "params": {
+              "username": {
+                "name": "Username",
+                "desc": "The new value for username."
+              }
+            }
+          },
+          "update-avatar": {
+            "list-name": "Update avatar",
+            "display-text": "Update user avatar to {0}",
+            "description": "Updates user avatar.",
+            "params": {
+              "avatar": {
+                "name": "Avatar URL",
+                "desc": "The new avatar URL."
+              }
+            }
+          },
+          "check-if-registered": {
+            "list-name": "Check if Registered",
+            "display-text": "Check if user is already registered.",
+            "description": "Checks if the user's account is already registered in the system."
+          },
+          "request-user-score": {
+            "list-name": "Request user score",
+            "display-text": "Requests user score.",
+            "description": "Requests user current and total score within provided leaderboard."
           }
         },
         "expressions": {
@@ -144,6 +196,21 @@
           "get-leaderboard": {
             "description": "Get the general leaderboard data.",
             "translated-name": "Get Leaderboard",
+            "params": {}
+          },
+          "get-is-registered": {
+            "description": "Retrieves whether the user's account is registered in the system.",
+            "translated-name": "Get Is Registered",
+            "params": {}
+          },
+          "get-current-score": {
+            "description": "Get the user's current score.",
+            "translated-name": "Get Current Score",
+            "params": {}
+          },
+          "get-total-score": {
+            "description": "Get the user's total score.",
+            "translated-name": "Get Total Score",
             "params": {}
           }
         }

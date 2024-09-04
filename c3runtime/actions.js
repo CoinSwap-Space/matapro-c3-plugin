@@ -11,4 +11,16 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async UpdateScore(score) {
     await this._UpdateScore(score);
   },
+  async UpdateUsername(username) {
+    await this._UpdateUsername(username);
+  },
+  async UpdateAvatar(avatar) {
+    await this._UpdateAvatar(avatar);
+  },
+  async CheckIfRegistered() {
+    await this._CheckIfRegistered();
+  },
+  async RequestUserScore() {
+    await this._RequestUserScore();
+  },
 };
