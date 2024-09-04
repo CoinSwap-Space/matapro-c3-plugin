@@ -1,4 +1,3 @@
-
 const SDK = self.SDK;
 
 ////////////////////////////////////////////
@@ -15,51 +14,56 @@ const PLUGIN_ID = "MetaproPlugin";
 const PLUGIN_VERSION = "1.0.0.0";
 const PLUGIN_CATEGORY = "platform-specific";
 
-const PLUGIN_CLASS = SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends SDK.IPluginBase
-{
-	constructor()
-	{
-		super(PLUGIN_ID);
-		
-		SDK.Lang.PushContext("plugins." + PLUGIN_ID.toLowerCase());
-		
-		this._info.SetName(self.lang(".name"));
-		this._info.SetDescription(self.lang(".description"));
-		this._info.SetVersion(PLUGIN_VERSION);
-		this._info.SetCategory(PLUGIN_CATEGORY);
-		this._info.SetAuthor("metapro");
-		this._info.SetHelpUrl(self.lang(".help-url"));
-        this._info.SetIsSingleGlobal(true);
-		
-        // File dependencies. Make sure these match with addon.json file-list
-        this._info.AddFileDependency({
-                filename: "icon.svg",
-                type: "copy-to-output",
-                fileType: "image/svg"
-            }
-        );
+const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
+  SDK.IPluginBase
+) {
+  constructor() {
+    super(PLUGIN_ID);
 
-        // Load domSide.js in the document context (main thread).
-		// This is important for supporting the runtime's web worker mode.
-		this._info.SetDOMSideScripts([
-            "c3runtime/domSide.js",
-        ]);
-		
-		SDK.Lang.PushContext(".properties");
-		
-		this._info.SetProperties([
-			new SDK.PluginProperty("text", "project-id", ""),
-			new SDK.PluginProperty("text", "referral-settings-id", ""),
-			new SDK.PluginProperty("text", "leaderboard-id", ""),
-			new SDK.PluginProperty("text", "leaderboard-api-key", ""),
-			new SDK.PluginProperty("text", "users-service-api-url", "https://test-api.coinswap.space/users-service"),
-			new SDK.PluginProperty("text", "clicker-api-url", "https://test-api.metaproprotocol.com/ms/clicker"),
-		]);
-		
-		SDK.Lang.PopContext();		// .properties
-		
-		SDK.Lang.PopContext();
-	}
-};
+    SDK.Lang.PushContext("plugins." + PLUGIN_ID.toLowerCase());
+
+    this._info.SetName(self.lang(".name"));
+    this._info.SetDescription(self.lang(".description"));
+    this._info.SetVersion(PLUGIN_VERSION);
+    this._info.SetCategory(PLUGIN_CATEGORY);
+    this._info.SetAuthor("metapro");
+    this._info.SetHelpUrl(self.lang(".help-url"));
+    this._info.SetIsSingleGlobal(true);
+
+    // File dependencies. Make sure these match with addon.json file-list
+    this._info.AddFileDependency({
+      filename: "icon.svg",
+      type: "copy-to-output",
+      fileType: "image/svg",
+    });
+
+    // Load domSide.js in the document context (main thread).
+    // This is important for supporting the runtime's web worker mode.
+    this._info.SetDOMSideScripts(["c3runtime/domSide.js"]);
+
+    SDK.Lang.PushContext(".properties");
+
+    this._info.SetProperties([
+      new SDK.PluginProperty("text", "project-id", ""),
+      new SDK.PluginProperty("text", "referral-settings-id", ""),
+      new SDK.PluginProperty("text", "leaderboard-id", ""),
+      new SDK.PluginProperty("text", "leaderboard-api-key", ""),
+      new SDK.PluginProperty(
+        "text",
+        "users-service-api-url",
+        "https://test-api.coinswap.space/users-service"
+      ),
+      new SDK.PluginProperty(
+        "text",
+        "leaderboard-api-url",
+        "https://test-api.metaproprotocol.com/ms/leaderboard"
+      ),
+    ]);
+
+    SDK.Lang.PopContext(); // .properties
+
+    SDK.Lang.PopContext();
+  }
+});
 
 PLUGIN_CLASS.Register(PLUGIN_ID, PLUGIN_CLASS);

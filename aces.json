@@ -1,128 +1,117 @@
 ﻿{
-	"products": {
-		"conditions": [
-            {
-				"id": "on-error",
-				"scriptName": "OnError",
-				"isTrigger": true
-			},
-            {
-				"id": "on-account-received",
-				"scriptName": "OnAccountReceived",
-                "isTrigger": true
-			},
-            {
-				"id": "on-user-logged-in",
-				"scriptName": "OnUserLoggedIn",
-                "isTrigger": true
-			},
-			{
-				"id": "on-leaderboard-received",
-				"scriptName": "OnLeaderboardReceived",
-                "isTrigger": true
-			}
-		],
-		"actions": [
-            {
-				"id": "request-account",
-				"scriptName": "RequestAccount",
-				"isAsync": true,
-				"params": []
-			},
-            {
-				"id": "login",
-				"scriptName": "Login",
-				"isAsync": true,
-				"params": [
-					{ "id": "referral-code", "type": "string" }, 
-					{ "id": "rules-checked", "type": "number" }
-				]
-			},
-            {
-				"id": "request-leaderboard",
-				"scriptName": "RequestLeaderboard",
-				"isAsync": true,
-				"params": [
-					{ "id": "level-id",	"type": "string" }, 
-					{ "id": "scores-after", "type": "number" },
-					{ "id": "scores-before", "type": "number" },
-					{ "id": "limit", "type": "number" }
-				]
-			}
-		],
-		"expressions": [
-            {
-				"id": "get-last-error",
-				"expressionName": "GetLastError",
-                "scriptName": "GetLastError",
-                "highlight": false,
-                "returnType": "string",
-				"params": []
-			},
-            {
-				"id": "get-account",
-				"expressionName": "GetAccount",
-				"scriptName": "GetAccount",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-avatar",
-				"expressionName": "GetAvatar",
-				"scriptName": "GetAvatar",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-user-id",
-				"expressionName": "GetUserId",
-				"scriptName": "GetUserId",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-username",
-				"expressionName": "GetUsername",
-				"scriptName": "GetUsername",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-access-token",
-				"expressionName": "GetAccessToken",
-				"scriptName": "GetAccessToken",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-personal-leaderboard",
-				"expressionName": "GetPersonalLeaderboard",
-				"scriptName": "GetPersonalLeaderboard",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-leaderboard",
-				"expressionName": "GetLeaderboard",
-				"scriptName": "GetLeaderboard",
-				"highlight": true,
-				"returnType": "string",
-				"params": []
-			},
-			{
-				"id": "get-user-position",
-				"expressionName": "GetUserPosition",
-				"scriptName": "GetUserPosition",
-				"highlight": true,
-				"returnType": "number",
-				"params": []
-			}
-		]
-	}
+  "products": {
+    "conditions": [
+      {
+        "id": "on-error",
+        "scriptName": "OnError",
+        "isTrigger": true
+      },
+      {
+        "id": "on-account-received",
+        "scriptName": "OnAccountReceived",
+        "isTrigger": true
+      },
+      {
+        "id": "on-user-logged-in",
+        "scriptName": "OnUserLoggedIn",
+        "isTrigger": true
+      },
+      {
+        "id": "on-leaderboard-received",
+        "scriptName": "OnLeaderboardReceived",
+        "isTrigger": true
+      }
+    ],
+    "actions": [
+      {
+        "id": "request-account",
+        "scriptName": "RequestAccount",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "login",
+        "scriptName": "Login",
+        "isAsync": true,
+        "params": [
+          { "id": "referral-code", "type": "string" },
+          { "id": "rules-checked", "type": "number" }
+        ]
+      },
+      {
+        "id": "request-leaderboard",
+        "scriptName": "RequestLeaderboard",
+        "isAsync": true,
+        "params": [
+          { "id": "limit", "type": "number" },
+          { "id": "min-balance", "type": "number" },
+          { "id": "max-balance", "type": "number" }
+        ]
+      },
+      {
+        "id": "update-score",
+        "scriptName": "UpdateScore",
+        "isAsync": true,
+        "params": [{ "id": "score", "type": "number" }]
+      }
+    ],
+    "expressions": [
+      {
+        "id": "get-last-error",
+        "expressionName": "GetLastError",
+        "scriptName": "GetLastError",
+        "highlight": false,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-account",
+        "expressionName": "GetAccount",
+        "scriptName": "GetAccount",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-avatar",
+        "expressionName": "GetAvatar",
+        "scriptName": "GetAvatar",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-user-id",
+        "expressionName": "GetUserId",
+        "scriptName": "GetUserId",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-username",
+        "expressionName": "GetUsername",
+        "scriptName": "GetUsername",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-access-token",
+        "expressionName": "GetAccessToken",
+        "scriptName": "GetAccessToken",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-leaderboard",
+        "expressionName": "GetLeaderboard",
+        "scriptName": "GetLeaderboard",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      }
+    ]
+  }
 }
