@@ -26,7 +26,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerLeaderboardReceived = false;
     this._triggerUsernameUpdated = false;
     this._triggerAvatarUpdated = false;
-    this._triggerRegisterChecked = false;
+    this._triggerIsRegistered = false;
+    this._triggerIsNotRegistered = false;
     this._triggerUserScoreReceived = false;
     this._triggerError = false;
 
@@ -37,7 +38,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._username = null; // string
     this._userId = null; // string
     this._personalDetails = {};
-    this._isRegistered = false;
 
     // Leaderboard data
     this._leaderboard = []; // array
@@ -386,32 +386,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _CheckIfRegistered() {
-    try {
-      const checkWalletResponse = await fetch(
-        `${this._usersServiceApiUrl}/v2/auth/web3/check/${this._account}?projectId=${this._projectId}`
-      );
-
-      if (!checkWalletResponse.ok) {
-        const errorData = await checkWalletResponse.json();
-        throw new Error(
-          errorData?.messages?.[0] ||
-            errorData?.message ||
-            "Something went wrong. Try again later!"
-        );
-      }
-
-      const { hasAccount, hasRulesChecked } = await checkWalletResponse.json();
-
-      this._isRegistered = hasAccount && hasRulesChecked;
-
-      this.OnRegisterChecked();
-    } catch (error) {
-      console.log(error);
-      this.HandleError("Failed to check if registered: " + error.message);
-    }
-  }
-
   async _RequestUserScore() {
     try {
       const scoreResponse = await fetch(
@@ -444,6 +418,36 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _CheckIfRegistered() {
+    try {
+      const checkWalletResponse = await fetch(
+        `${this._usersServiceApiUrl}/v2/auth/web3/check/${this._account}?projectId=${this._projectId}`
+      );
+
+      if (!checkWalletResponse.ok) {
+        const errorData = await checkWalletResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const { hasAccount, hasRulesChecked } = await checkWalletResponse.json();
+
+      const isRegistered = hasAccount && hasRulesChecked;
+
+      if (isRegistered) {
+        this.OnIsRegistered();
+      } else {
+        this.OnIsNotRegistered();
+      }
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to check if registered: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -470,14 +474,19 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnAvatarUpdated);
   }
 
-  OnRegisterChecked() {
-    this._triggerRegisterChecked = true;
-    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnRegisterChecked);
-  }
-
   OnUserScoreReceived() {
     this._triggerUserScoreReceived = true;
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnUserScoreReceived);
+  }
+
+  OnIsRegistered() {
+    this._triggerIsRegistered = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnIsRegistered);
+  }
+
+  OnIsNotRegistered() {
+    this._triggerIsNotRegistered = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnIsNotRegistered);
   }
 
   // Expressions
@@ -503,10 +512,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetLeaderboard() {
     return this._leaderboard;
-  }
-
-  _GetIsRegistered() {
-    return this._isRegistered;
   }
 
   _GetCurrentScore() {

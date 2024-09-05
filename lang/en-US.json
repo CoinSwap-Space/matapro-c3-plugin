@@ -62,11 +62,17 @@
             "display-text": "When avatar is updated",
             "description": "Triggered when avatar is successfully updated."
           },
-          "on-register-checked": {
-            "list-name": "On Register Checked",
-            "display-text": "When register data is received.",
-            "description": "Triggered when successfully checked if user is registered."
+          "on-is-registered": {
+            "list-name": "On Is User Registered",
+            "display-text": "Triggered when the user is registered.",
+            "description": "Triggered when it is confirmed that the user is registered in the system."
           },
+          "on-is-not-registered": {
+            "list-name": "On User Not Registered",
+            "display-text": "Triggered when the user is not registered.",
+            "description": "Triggered when it is confirmed that the user is not registered in the system."
+          },
+
           "on-user-score-received": {
             "list-name": "On User Score Received",
             "display-text": "When user scores data is received.",
@@ -196,11 +202,6 @@
           "get-leaderboard": {
             "description": "Get the general leaderboard data.",
             "translated-name": "Get Leaderboard",
-            "params": {}
-          },
-          "get-is-registered": {
-            "description": "Retrieves whether the user's account is registered in the system.",
-            "translated-name": "Get Is Registered",
             "params": {}
           },
           "get-current-score": {

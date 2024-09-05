@@ -47,17 +47,25 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
-  OnRegisterChecked() {
-    if (this._triggerRegisterChecked) {
-      this._triggerRegisterChecked = false;
+  OnUserScoreReceived() {
+    if (this._triggerUserScoreReceived) {
+      this._triggerUserScoreReceived = false;
       return true;
     }
 
     return false;
   },
-  OnUserScoreReceived() {
-    if (this._triggerUserScoreReceived) {
-      this._triggerUserScoreReceived = false;
+  OnIsRegistered() {
+    if (this._triggerIsRegistered) {
+      this._triggerIsRegistered = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnIsNotRegistered() {
+    if (this._triggerIsNotRegistered) {
+      this._triggerIsNotRegistered = false;
       return true;
     }
 

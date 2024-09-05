@@ -32,8 +32,13 @@
         "isTrigger": true
       },
       {
-        "id": "on-register-checked",
-        "scriptName": "OnRegisterChecked",
+        "id": "on-is-registered",
+        "scriptName": "OnIsRegistered",
+        "isTrigger": true
+      },
+      {
+        "id": "on-is-not-registered",
+        "scriptName": "OnIsNotRegistered",
         "isTrigger": true
       },
       {
@@ -154,14 +159,6 @@
         "scriptName": "GetLeaderboard",
         "highlight": true,
         "returnType": "string",
-        "params": []
-      },
-      {
-        "id": "get-is-registered",
-        "expressionName": "GetIsRegistered",
-        "scriptName": "GetIsRegistered",
-        "highlight": true,
-        "returnType": "number",
         "params": []
       },
       {
