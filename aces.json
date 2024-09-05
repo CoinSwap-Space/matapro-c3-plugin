@@ -1,0 +1,182 @@
+﻿{
+  "products": {
+    "conditions": [
+      {
+        "id": "on-error",
+        "scriptName": "OnError",
+        "isTrigger": true
+      },
+      {
+        "id": "on-account-received",
+        "scriptName": "OnAccountReceived",
+        "isTrigger": true
+      },
+      {
+        "id": "on-user-logged-in",
+        "scriptName": "OnUserLoggedIn",
+        "isTrigger": true
+      },
+      {
+        "id": "on-leaderboard-received",
+        "scriptName": "OnLeaderboardReceived",
+        "isTrigger": true
+      },
+      {
+        "id": "on-username-updated",
+        "scriptName": "OnUsernameUpdated",
+        "isTrigger": true
+      },
+      {
+        "id": "on-avatar-updated",
+        "scriptName": "OnAvatarUpdated",
+        "isTrigger": true
+      },
+      {
+        "id": "on-is-registered",
+        "scriptName": "OnIsRegistered",
+        "isTrigger": true
+      },
+      {
+        "id": "on-is-not-registered",
+        "scriptName": "OnIsNotRegistered",
+        "isTrigger": true
+      },
+      {
+        "id": "on-user-score-received",
+        "scriptName": "OnUserScoreReceived",
+        "isTrigger": true
+      }
+    ],
+    "actions": [
+      {
+        "id": "request-account",
+        "scriptName": "RequestAccount",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "login",
+        "scriptName": "Login",
+        "isAsync": true,
+        "params": [
+          { "id": "referral-code", "type": "string" },
+          { "id": "rules-checked", "type": "number" }
+        ]
+      },
+      {
+        "id": "request-leaderboard",
+        "scriptName": "RequestLeaderboard",
+        "isAsync": true,
+        "params": [
+          { "id": "limit", "type": "number" },
+          { "id": "min-balance", "type": "number" },
+          { "id": "max-balance", "type": "number" }
+        ]
+      },
+      {
+        "id": "update-score",
+        "scriptName": "UpdateScore",
+        "isAsync": true,
+        "params": [{ "id": "score", "type": "number" }]
+      },
+      {
+        "id": "update-username",
+        "scriptName": "UpdateUsername",
+        "isAsync": true,
+        "params": [{ "id": "username", "type": "string" }]
+      },
+      {
+        "id": "update-avatar",
+        "scriptName": "UpdateAvatar",
+        "isAsync": true,
+        "params": [{ "id": "avatar", "type": "string" }]
+      },
+      {
+        "id": "check-if-registered",
+        "scriptName": "CheckIfRegistered",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "request-user-score",
+        "scriptName": "RequestUserScore",
+        "isAsync": true,
+        "params": []
+      }
+    ],
+    "expressions": [
+      {
+        "id": "get-last-error",
+        "expressionName": "GetLastError",
+        "scriptName": "GetLastError",
+        "highlight": false,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-account",
+        "expressionName": "GetAccount",
+        "scriptName": "GetAccount",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-avatar",
+        "expressionName": "GetAvatar",
+        "scriptName": "GetAvatar",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-user-id",
+        "expressionName": "GetUserId",
+        "scriptName": "GetUserId",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-username",
+        "expressionName": "GetUsername",
+        "scriptName": "GetUsername",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-access-token",
+        "expressionName": "GetAccessToken",
+        "scriptName": "GetAccessToken",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-leaderboard",
+        "expressionName": "GetLeaderboard",
+        "scriptName": "GetLeaderboard",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-current-score",
+        "expressionName": "GetCurrentScore",
+        "scriptName": "GetCurrentScore",
+        "highlight": true,
+        "returnType": "number",
+        "params": []
+      },
+      {
+        "id": "get-total-score",
+        "expressionName": "GetTotalScore",
+        "scriptName": "GetTotalScore",
+        "highlight": true,
+        "returnType": "number",
+        "params": []
+      }
+    ]
+  }
+}
