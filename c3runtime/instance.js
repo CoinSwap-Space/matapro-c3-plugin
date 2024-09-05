@@ -144,9 +144,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         projectId: this._projectId,
       };
 
-      if (hasAccount && !hasRulesChecked) {
-        body.rulesChecked = this.ConvertToBoolean(rules_checked);
-      } else if (!hasAccount && !hasRulesChecked) {
+      if (!(hasAccount && hasRulesChecked)) {
         body.rulesChecked = this.ConvertToBoolean(rules_checked);
         if (referral_code) {
           body.referralSettingsId = this._referralSettingsId;
