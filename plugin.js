@@ -48,16 +48,8 @@ const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
       new SDK.PluginProperty("text", "referral-settings-id", ""),
       new SDK.PluginProperty("text", "leaderboard-id", ""),
       new SDK.PluginProperty("text", "leaderboard-api-key", ""),
-      new SDK.PluginProperty(
-        "text",
-        "users-service-api-url",
-        "https://test-api.coinswap.space/users-service"
-      ),
-      new SDK.PluginProperty(
-        "text",
-        "leaderboard-api-url",
-        "https://test-api.metaproprotocol.com/ms/leaderboard"
-      ),
+      new SDK.PluginProperty("text", "users-service-api-url", ""),
+      new SDK.PluginProperty("text", "leaderboard-api-url", ""),
     ]);
 
     SDK.Lang.PopContext(); // .properties

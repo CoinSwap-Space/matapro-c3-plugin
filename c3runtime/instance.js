@@ -14,9 +14,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._referralSettingsId = "";
     this._leaderboardId = "";
     this._leaderboardApiKey = "";
-    this._usersServiceApiUrl = "https://test-api.coinswap.space/users-service"; // Testnet
-    this._leaderboardApiUrl =
-      "https://test-api.metaproprotocol.com/ms/leaderboard"; // Testnet
+    this._usersServiceApiUrl = "";
+    this._leaderboardApiUrl = "";
 
     // Error
     this._errorMsg = "";
