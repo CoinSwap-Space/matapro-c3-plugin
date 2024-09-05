@@ -229,12 +229,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
 
         const usersResponse = await fetch(
-          `${this._usersServiceApiUrl}/profiles?${requestParams}`,
-          {
-            headers: {
-              "x-account-wallet": this._account,
-            },
-          }
+          `${this._usersServiceApiUrl}/profiles?${requestParams}`
         );
 
         if (!usersResponse.ok) {
