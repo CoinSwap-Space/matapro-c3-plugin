@@ -31,6 +31,10 @@
           "leaderboard-api-url": {
             "name": "Leaderboard API URL",
             "desc": "The URL of the Leaderboard API used in the Metapro system."
+          },
+          "referral-api-url": {
+            "name": "Referral API URL",
+            "desc": "The URL of the referral API used in the Metapro system."
           }
         },
         "aceCategories": {
@@ -64,19 +68,38 @@
           },
           "on-is-registered": {
             "list-name": "On Is User Registered",
-            "display-text": "Triggered when the user is registered.",
+            "display-text": "When the user is registered.",
             "description": "Triggered when it is confirmed that the user is registered in the system."
           },
           "on-is-not-registered": {
             "list-name": "On User Not Registered",
-            "display-text": "Triggered when the user is not registered.",
+            "display-text": "When the user is not registered.",
             "description": "Triggered when it is confirmed that the user is not registered in the system."
           },
-
           "on-user-score-received": {
             "list-name": "On User Score Received",
             "display-text": "When user scores data is received.",
             "description": "Triggered if scores data is successfully received."
+          },
+          "on-referral-code-exists": {
+            "list-name": "On Referral Code Exists",
+            "display-text": "When user's referral code exists.",
+            "description": "Triggered if referral data is successfully received and user has assigned referral code."
+          },
+          "on-referral-code-empty": {
+            "list-name": "On Referral Code Empty",
+            "display-text": "When user's referral code is empty.",
+            "description": "Triggered if referral data is successfully received and user doesn't have referral code."
+          },
+          "on-referral-code-generated": {
+            "list-name": "On Referral Code Generated",
+            "display-text": "Triggered when the user's referral code is generated.",
+            "description": "Triggered when a new referral code is successfully generated for the user."
+          },
+          "on-referral-structure-received": {
+            "list-name": "On Referral Structure Received",
+            "display-text": "Triggered when the user's referral structure is received.",
+            "description": "Triggered when the referral structure data is successfully received."
           },
           "on-error": {
             "list-name": "On Error",
@@ -166,6 +189,21 @@
             "list-name": "Request user score",
             "display-text": "Requests user score.",
             "description": "Requests user current and total score within provided leaderboard."
+          },
+          "fetch-referral-code": {
+            "list-name": "Fetch referral code",
+            "display-text": "Requests user's referral code.",
+            "description": "Requests user's referral code from referral system."
+          },
+          "generate-referral-code": {
+            "list-name": "Generate Referral Code",
+            "display-text": "Generate a referral code for the user.",
+            "description": "Generates a unique referral code associated with the user's userId."
+          },
+          "request-referral-structure": {
+            "list-name": "Request Referral Structure",
+            "display-text": "Request the referral structure for the user.",
+            "description": "Retrieves the referral downline structure, including level, total score, user count, and percentage of each level in the referral system."
           }
         },
         "expressions": {
@@ -212,6 +250,16 @@
           "get-total-score": {
             "description": "Get the user's total score.",
             "translated-name": "Get Total Score",
+            "params": {}
+          },
+          "get-referral-code": {
+            "description": "Get the user's referral code.",
+            "translated-name": "Get Referral Code",
+            "params": {}
+          },
+          "get-referral-structure": {
+            "description": "Get the user's referral downline structure.",
+            "translated-name": "Get Referral Downline Structure",
             "params": {}
           }
         }

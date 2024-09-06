@@ -29,4 +29,13 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetTotalScore() {
     return this._GetTotalScore();
   },
+  GetReferralCode() {
+    return this._GetReferralCode();
+  },
+  GetReferralStructure() {
+    const structure = this._GetReferralStructure();
+    const jsonStructure = JSON.stringify(structure);
+
+    return jsonStructure;
+  },
 };

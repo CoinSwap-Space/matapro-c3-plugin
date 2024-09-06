@@ -71,4 +71,36 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnReferralCodeExists() {
+    if (this._triggerReferralCodeExists) {
+      this._triggerReferralCodeExists = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnReferralCodeEmpty() {
+    if (this._triggerReferralCodeEmpty) {
+      this._triggerReferralCodeEmpty = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnReferralCodeGenerated() {
+    if (this._triggerReferralCodeGenerated) {
+      this._triggerReferralCodeGenerated = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnReferralStructureReceived() {
+    if (this._triggerReferralStructureReceived) {
+      this._triggerReferralStructureReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };

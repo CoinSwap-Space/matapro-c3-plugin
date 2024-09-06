@@ -45,6 +45,26 @@
         "id": "on-user-score-received",
         "scriptName": "OnUserScoreReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-referral-code-exists",
+        "scriptName": "OnReferralCodeExists",
+        "isTrigger": true
+      },
+      {
+        "id": "on-referral-code-empty",
+        "scriptName": "OnReferralCodeEmpty",
+        "isTrigger": true
+      },
+      {
+        "id": "on-referral-code-generated",
+        "scriptName": "OnReferralCodeGenerated",
+        "isTrigger": true
+      },
+      {
+        "id": "on-referral-structure-received",
+        "scriptName": "OnReferralStructureReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -100,6 +120,24 @@
       {
         "id": "request-user-score",
         "scriptName": "RequestUserScore",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "fetch-referral-code",
+        "scriptName": "FetchReferralCode",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "generate-referral-code",
+        "scriptName": "GenerateReferralCode",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "request-referral-structure",
+        "scriptName": "RequestReferralStructure",
         "isAsync": true,
         "params": []
       }
@@ -175,6 +213,22 @@
         "scriptName": "GetTotalScore",
         "highlight": true,
         "returnType": "number",
+        "params": []
+      },
+      {
+        "id": "get-referral-code",
+        "expressionName": "GetReferralCode",
+        "scriptName": "GetReferralCode",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-referral-structure",
+        "expressionName": "GetReferralStructure",
+        "scriptName": "GetReferralStructure",
+        "highlight": true,
+        "returnType": "string",
         "params": []
       }
     ]
