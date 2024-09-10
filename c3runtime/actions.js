@@ -23,4 +23,13 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestUserScore() {
     await this._RequestUserScore();
   },
+  async FetchReferralCode() {
+    await this._FetchReferralCode();
+  },
+  async GenerateReferralCode() {
+    await this._GenerateReferralCode();
+  },
+  async RequestReferralStructure() {
+    await this._RequestReferralStructure();
+  },
 };

@@ -16,6 +16,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._leaderboardApiKey = "";
     this._usersServiceApiUrl = "";
     this._leaderboardApiUrl = "";
+    this._referralApiUrl = "";
 
     // Error
     this._errorMsg = "";
@@ -29,6 +30,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerIsRegistered = false;
     this._triggerIsNotRegistered = false;
     this._triggerUserScoreReceived = false;
+    this._triggerReferralCodeExists = false;
+    this._triggerReferralCodeEmpty = false;
+    this._triggerReferralCodeGenerated = false;
+    this._triggerReferralStructureReceived = false;
     this._triggerError = false;
 
     // User data
@@ -39,8 +44,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._userId = null; // string
     this._personalDetails = {};
 
+    // Referral data
+    this._referralCode = null; // string
+    this._referralStructure = [];
+
     // Leaderboard data
-    this._leaderboard = []; // array
+    this._leaderboard = [];
     this._currentScore = 0;
     this._totalScore = 0;
 
@@ -51,6 +60,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._leaderboardApiKey = properties[3];
       this._usersServiceApiUrl = properties[4];
       this._leaderboardApiUrl = properties[5];
+      this._referralApiUrl = properties[6];
     }
   }
 
@@ -446,6 +456,110 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _FetchReferralCode() {
+    try {
+      const refCodeResponse = await fetch(
+        `${this._referralApiUrl}/users/projects/${this._projectId}/referral-code`,
+        {
+          headers: {
+            "x-account-userid": this._userId,
+            Authorization: this._accessToken,
+          },
+        }
+      );
+
+      if (!refCodeResponse.ok) {
+        const errorData = await refCodeResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const response = await refCodeResponse.json();
+
+      if (response.referralCode) {
+        this._referralCode = response.referralCode;
+        this.OnReferralCodeExists();
+      } else {
+        this.OnReferralCodeEmpty();
+      }
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to retrieve referral code: " + error.message);
+    }
+  }
+
+  async _GenerateReferralCode() {
+    try {
+      const refCodeResponse = await fetch(
+        `${this._referralApiUrl}/users/projects/referral-code`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-account-UserId": this._userId,
+            Authorization: this._accessToken,
+          },
+          body: JSON.stringify({ projectId: this._projectId }),
+        }
+      );
+
+      if (!refCodeResponse.ok) {
+        const errorData = await refCodeResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const response = await refCodeResponse.json();
+
+      this._referralCode = response.referralCode;
+
+      this.OnReferralCodeGenerated();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to generate referral code: " + error.message);
+    }
+  }
+
+  async _RequestReferralStructure() {
+    try {
+      const refStructureResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-total/downline/${this._leaderboardId}/${this._userId}`,
+        {
+          headers: {
+            leaderboardApiKey: this._leaderboardApiKey,
+          },
+        }
+      );
+
+      if (!refStructureResponse.ok) {
+        const errorData = await refStructureResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const response = await refStructureResponse.json();
+
+      this._referralStructure = response.map((refLevel) => ({
+        ...refLevel,
+        percentage: refLevel.percentage * 10,
+      }));
+
+      this.OnReferralStructureReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to get referral structure: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -487,6 +601,26 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnIsNotRegistered);
   }
 
+  OnReferralCodeExists() {
+    this._triggerReferralCodeExists = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralCodeExists);
+  }
+
+  OnReferralCodeEmpty() {
+    this._triggerReferralCodeEmpty = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralCodeEmpty);
+  }
+
+  OnReferralCodeGenerated() {
+    this._triggerReferralCodeGenerated = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralCodeGenerated);
+  }
+
+  OnReferralStructureReceived() {
+    this._triggerReferralStructureReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralStructureReceived);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -518,6 +652,14 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetTotalScore() {
     return this._totalScore;
+  }
+
+  _GetReferralCode() {
+    return this._referralCode;
+  }
+
+  _GetReferralStructure() {
+    return this._referralStructure;
   }
 
   _GetLastError() {
