@@ -131,24 +131,24 @@
           "request-leaderboard": {
             "list-name": "Request Leaderboard",
             "display-text": "Request leaderboard with limit {0}, minimum balance {1} and maximum balance {2}",
-            "description": "Requests leaderboard data for a specific level and score range with a defined limit.",
+            "description": "Requests leaderboard data for a specific score range with a defined limit.",
             "params": {
               "limit": {
                 "name": "Limit",
                 "desc": "The maximum number of leaderboard entries to retrieve."
               },
               "min-balance": {
-                "name": "Min balance",
+                "name": "Min Balance",
                 "desc": "Minimum balance to display."
               },
               "max-balance": {
-                "name": "Max balance",
+                "name": "Max Balance",
                 "desc": "Maximum balance to display."
               }
             }
           },
           "update-score": {
-            "list-name": "Update score",
+            "list-name": "Update Score",
             "display-text": "Update user score with {0}",
             "description": "Updates user score.",
             "params": {
@@ -159,7 +159,7 @@
             }
           },
           "update-username": {
-            "list-name": "Update username",
+            "list-name": "Update Username",
             "display-text": "Update username to {0}",
             "description": "Updates username.",
             "params": {
@@ -170,7 +170,7 @@
             }
           },
           "update-avatar": {
-            "list-name": "Update avatar",
+            "list-name": "Update Avatar",
             "display-text": "Update user avatar to {0}",
             "description": "Updates user avatar.",
             "params": {
@@ -181,17 +181,17 @@
             }
           },
           "check-if-registered": {
-            "list-name": "Check if Registered",
+            "list-name": "Check If Registered",
             "display-text": "Check if user is already registered.",
             "description": "Checks if the user's account is already registered in the system."
           },
           "request-user-score": {
-            "list-name": "Request user score",
+            "list-name": "Request User Score",
             "display-text": "Requests user score.",
             "description": "Requests user current and total score within provided leaderboard."
           },
           "fetch-referral-code": {
-            "list-name": "Fetch referral code",
+            "list-name": "Fetch Referral Code",
             "display-text": "Requests user's referral code.",
             "description": "Requests user's referral code from referral system."
           },
