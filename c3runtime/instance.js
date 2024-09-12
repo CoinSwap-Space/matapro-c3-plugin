@@ -35,6 +35,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerReferralCodeGenerated = false;
     this._triggerReferralStructureReceived = false;
     this._triggerBestScoreReceived = false;
+    this._triggerBestScoresLeaderboardReceived = false;
     this._triggerError = false;
 
     // User data
@@ -53,6 +54,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._mapId = 0;
     this._bestScore = 0;
     this._leaderboard = [];
+    this._bestScoresLeaderboard = [];
     this._currentScore = 0;
     this._totalScore = 0;
 
@@ -261,7 +263,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
           if (user) {
             return {
-              ...player,
+              userId: player.userId,
+              position: player.position,
+              currentScore: player.currentRoundData.score,
+              totalScore: player.totalRoundData.score,
               username:
                 user?.personalDetails?.username ||
                 this.ShortenText(walletAddress, 6, 4),
@@ -269,7 +274,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
             };
           } else {
             return {
-              ...player,
+              userId: player.userId,
+              position: player.position,
+              currentScore: player.currentRoundData.score,
+              totalScore: player.totalRoundData.score,
               username: player.userId,
               avatar: "",
             };
@@ -417,6 +425,93 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     } catch (error) {
       console.log(error);
       this.HandleError("Failed to add score: " + error.message);
+    }
+  }
+
+  async _RequestBestScoresLeaderboardByMapId(limit) {
+    try {
+      const params = new URLSearchParams({
+        limit: limit || 20,
+        leaderboardId: this._leaderboardId,
+        map: this._mapId,
+      }).toString();
+
+      const url = `${this._leaderboardApiUrl}/score-map/get?${params}`;
+
+      const leaderboardResponse = await fetch(url, {
+        headers: {
+          leaderboardApiKey: this._leaderboardApiKey,
+        },
+      });
+
+      if (!leaderboardResponse.ok) {
+        const errorData = await leaderboardResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const { results } = await leaderboardResponse.json();
+      let leaderboard = results;
+
+      if (leaderboard.length > 0) {
+        const requestParams = new URLSearchParams({ limit: 99999 });
+
+        leaderboard.forEach((item) =>
+          requestParams.append("userIds", item.userId)
+        );
+
+        const usersResponse = await fetch(
+          `${this._usersServiceApiUrl}/profiles?${requestParams}`
+        );
+
+        if (!usersResponse.ok) {
+          const errorData = await usersResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const { results } = await usersResponse.json();
+
+        leaderboard = leaderboard.map((player) => {
+          const user = results.find(({ userId }) => userId === player.userId);
+          const walletAddress = user?.addresses[0]?.wallet;
+
+          if (user) {
+            return {
+              userId: player.userId,
+              position: player.position,
+              bestScore: player.roundData.score,
+              username:
+                user?.personalDetails?.username ||
+                this.ShortenText(walletAddress, 6, 4),
+              avatar: user?.personalDetails?.avatar || "",
+            };
+          } else {
+            return {
+              userId: player.userId,
+              position: player.position,
+              bestScore: player.roundData.score,
+              username: player.userId,
+              avatar: "",
+            };
+          }
+        });
+      }
+
+      this._bestScoresLeaderboard = leaderboard;
+
+      this.OnBestScoresLeaderboardReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError(
+        "Failed to get best scores leaderboard: " + error.message
+      );
     }
   }
 
@@ -766,6 +861,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnBestScoreReceived);
   }
 
+  OnBestScoresLeaderboardReceived() {
+    this._triggerBestScoresLeaderboardReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnBestScoresLeaderboardReceived);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -809,6 +909,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetBestScore() {
     return this._bestScore;
+  }
+
+  _GetBestScoresLeaderboard() {
+    return this._bestScoresLeaderboard;
   }
 
   _GetLastError() {

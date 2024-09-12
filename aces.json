@@ -70,6 +70,11 @@
         "id": "on-best-score-received",
         "scriptName": "OnBestScoreReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-best-scores-leaderboard-received",
+        "scriptName": "OnBestScoresLeaderboardReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -157,6 +162,12 @@
         "scriptName": "RequestBestScore",
         "isAsync": true,
         "params": []
+      },
+      {
+        "id": "request-best-scores-leaderboard-by-map-id",
+        "scriptName": "RequestBestScoresLeaderboardByMapId",
+        "isAsync": true,
+        "params": [{ "id": "limit", "type": "number" }]
       }
     ],
     "expressions": [
@@ -254,6 +265,14 @@
         "scriptName": "GetBestScore",
         "highlight": true,
         "returnType": "number",
+        "params": []
+      },
+      {
+        "id": "get-best-scores-leaderboard",
+        "expressionName": "GetBestScoresLeaderboard",
+        "scriptName": "GetBestScoresLeaderboard",
+        "highlight": true,
+        "returnType": "string",
         "params": []
       }
     ]

@@ -41,4 +41,10 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetBestScore() {
     return this._GetBestScore();
   },
+  GetBestScoresLeaderboard() {
+    const leaderboard = this._GetBestScoresLeaderboard();
+    const jsonLeaderboard = JSON.stringify(leaderboard);
+
+    return jsonLeaderboard;
+  },
 };

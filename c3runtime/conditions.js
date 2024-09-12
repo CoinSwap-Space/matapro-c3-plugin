@@ -111,4 +111,12 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnBestScoresLeaderboardReceived() {
+    if (this._triggerBestScoresLeaderboardReceived) {
+      this._triggerBestScoresLeaderboardReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };

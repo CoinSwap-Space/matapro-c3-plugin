@@ -38,4 +38,7 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestBestScore() {
     await this._RequestBestScore();
   },
+  async RequestBestScoresLeaderboardByMapId(limit) {
+    await this._RequestBestScoresLeaderboardByMapId(limit);
+  },
 };

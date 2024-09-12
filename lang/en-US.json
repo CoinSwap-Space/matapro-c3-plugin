@@ -114,6 +114,11 @@
             "list-name": "On Best Score Received",
             "display-text": "Triggered when the user's best score is received.",
             "description": "Triggered when the best score data for the user is successfully retrieved."
+          },
+          "on-best-scores-leaderboard-received": {
+            "list-name": "On Best Scores Leaderboard Received",
+            "display-text": "Triggered when the best scores leaderboard is received.",
+            "description": "Triggered when the best scores leaderboard data is successfully retrieved."
           }
         },
         "actions": {
@@ -229,6 +234,17 @@
             "list-name": "Request Best Score",
             "display-text": "Request the best score for the user.",
             "description": "Retrieves the highest score achieved by the user."
+          },
+          "request-best-scores-leaderboard-by-map-id": {
+            "list-name": "Request Best Scores Leaderboard",
+            "display-text": "Request the best scores leaderboard with limit {0}",
+            "description": "Requests the leaderboard data showing the best scores for a specific map, with an optional limit.",
+            "params": {
+              "limit": {
+                "name": "Limit",
+                "desc": "The maximum number of leaderboard entries to retrieve."
+              }
+            }
           }
         },
         "expressions": {
@@ -290,6 +306,11 @@
           "get-best-score": {
             "description": "Get the user's highest score.",
             "translated-name": "Get Best Score",
+            "params": {}
+          },
+          "get-best-scores-leaderboard": {
+            "description": "Get the leaderboard showing the user's highest scores.",
+            "translated-name": "Get Best Scores Leaderboard",
             "params": {}
           }
         }
