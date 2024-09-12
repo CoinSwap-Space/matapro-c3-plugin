@@ -38,4 +38,7 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonStructure;
   },
+  GetBestScore() {
+    return this._GetBestScore();
+  },
 };

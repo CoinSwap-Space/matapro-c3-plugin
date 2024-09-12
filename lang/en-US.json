@@ -35,6 +35,10 @@
           "referral-api-url": {
             "name": "Referral API URL",
             "desc": "The URL of the referral API used in the Metapro system."
+          },
+          "map-id": {
+            "name": "Map ID",
+            "desc": "The ID of generated map."
           }
         },
         "aceCategories": {
@@ -105,6 +109,11 @@
             "list-name": "On Error",
             "display-text": "When an error occurs",
             "description": "Triggered when an error occurs during any plugin operation."
+          },
+          "on-best-score-received": {
+            "list-name": "On Best Score Received",
+            "display-text": "Triggered when the user's best score is received.",
+            "description": "Triggered when the best score data for the user is successfully retrieved."
           }
         },
         "actions": {
@@ -204,6 +213,22 @@
             "list-name": "Request Referral Structure",
             "display-text": "Request the referral structure for the user.",
             "description": "Retrieves the referral downline structure, including level, total score, user count, and percentage of each level in the referral system."
+          },
+          "add-score": {
+            "list-name": "Add score",
+            "display-text": "Add score {0}",
+            "description": "Add a new entry score for user.",
+            "params": {
+              "score": {
+                "name": "Score",
+                "desc": "The score earned by the user."
+              }
+            }
+          },
+          "request-best-score": {
+            "list-name": "Request Best Score",
+            "display-text": "Request the best score for the user.",
+            "description": "Retrieves the highest score achieved by the user."
           }
         },
         "expressions": {
@@ -260,6 +285,11 @@
           "get-referral-structure": {
             "description": "Get the user's referral downline structure.",
             "translated-name": "Get Referral Downline Structure",
+            "params": {}
+          },
+          "get-best-score": {
+            "description": "Get the user's highest score.",
+            "translated-name": "Get Best Score",
             "params": {}
           }
         }

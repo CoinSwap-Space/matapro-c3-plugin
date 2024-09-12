@@ -65,6 +65,11 @@
         "id": "on-referral-structure-received",
         "scriptName": "OnReferralStructureReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-best-score-received",
+        "scriptName": "OnBestScoreReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -138,6 +143,18 @@
       {
         "id": "request-referral-structure",
         "scriptName": "RequestReferralStructure",
+        "isAsync": true,
+        "params": []
+      },
+      {
+        "id": "add-score",
+        "scriptName": "AddScore",
+        "isAsync": true,
+        "params": [{ "id": "score", "type": "number" }]
+      },
+      {
+        "id": "request-best-score",
+        "scriptName": "RequestBestScore",
         "isAsync": true,
         "params": []
       }
@@ -229,6 +246,14 @@
         "scriptName": "GetReferralStructure",
         "highlight": true,
         "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-best-score",
+        "expressionName": "GetBestScore",
+        "scriptName": "GetBestScore",
+        "highlight": true,
+        "returnType": "number",
         "params": []
       }
     ]

@@ -32,4 +32,10 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestReferralStructure() {
     await this._RequestReferralStructure();
   },
+  async AddScore(score) {
+    await this._AddScore(score);
+  },
+  async RequestBestScore() {
+    await this._RequestBestScore();
+  },
 };

@@ -34,6 +34,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerReferralCodeEmpty = false;
     this._triggerReferralCodeGenerated = false;
     this._triggerReferralStructureReceived = false;
+    this._triggerBestScoreReceived = false;
     this._triggerError = false;
 
     // User data
@@ -49,6 +50,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._referralStructure = [];
 
     // Leaderboard data
+    this._mapId = 0;
+    this._bestScore = 0;
     this._leaderboard = [];
     this._currentScore = 0;
     this._totalScore = 0;
@@ -61,6 +64,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._usersServiceApiUrl = properties[4];
       this._leaderboardApiUrl = properties[5];
       this._referralApiUrl = properties[6];
+      this._mapId = properties[7];
     }
   }
 
@@ -255,13 +259,21 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
           const user = results.find(({ userId }) => userId === player.userId);
           const walletAddress = user?.addresses[0]?.wallet;
 
-          return {
-            ...player,
-            username:
-              user?.personalDetails?.username ||
-              this.ShortenText(walletAddress, 6, 4),
-            avatar: user?.personalDetails?.avatar || "",
-          };
+          if (user) {
+            return {
+              ...player,
+              username:
+                user?.personalDetails?.username ||
+                this.ShortenText(walletAddress, 6, 4),
+              avatar: user?.personalDetails?.avatar || "",
+            };
+          } else {
+            return {
+              ...player,
+              username: player.userId,
+              avatar: "",
+            };
+          }
         });
       }
 
@@ -312,6 +324,134 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     } catch (error) {
       console.log(error);
       this.HandleError("Failed to update score: " + error.message);
+    }
+  }
+
+  async _AddScore(score) {
+    try {
+      // Create match ID
+      const createMatchResponse = await fetch(
+        `${this._leaderboardApiUrl}/match-data/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            leaderboardApiKey: this._leaderboardApiKey,
+          },
+          body: JSON.stringify({
+            leaderboardId: this._leaderboardId,
+          }),
+        }
+      );
+
+      if (!createMatchResponse.ok) {
+        const errorData = await createMatchResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+      const matchId = await createMatchResponse.text();
+
+      // Create score per map
+      const scoreResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-map/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            leaderboardApiKey: this._leaderboardApiKey,
+          },
+          body: JSON.stringify({
+            leaderboardId: this._leaderboardId,
+            userId: this._userId,
+            matchId,
+            map: this._mapId,
+            startedAt: new Date().toISOString(),
+            endedAt: new Date().toISOString(),
+            projectId: this._projectId,
+            roundData: {
+              score,
+            },
+          }),
+        }
+      );
+
+      if (!scoreResponse.ok) {
+        const errorData = await scoreResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const params = new URLSearchParams({
+        leaderboardId: this._leaderboardId,
+        map: this._mapId,
+      }).toString();
+
+      const url = `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?${params}`;
+
+      const bestScoreResponse = await fetch(url, {
+        headers: {
+          leaderboardApiKey: this._leaderboardApiKey,
+        },
+      });
+
+      if (!bestScoreResponse.ok) {
+        const errorData = await bestScoreResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const bestScore = await bestScoreResponse.json();
+
+      this._bestScore = bestScore?.[0]?.roundData?.score || 0;
+
+      this.OnBestScoreReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to add score: " + error.message);
+    }
+  }
+
+  async _RequestBestScore() {
+    try {
+      const params = new URLSearchParams({
+        leaderboardId: this._leaderboardId,
+        map: this._mapId,
+      }).toString();
+
+      const url = `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?${params}`;
+
+      const bestScoreResponse = await fetch(url, {
+        headers: {
+          leaderboardApiKey: this._leaderboardApiKey,
+        },
+      });
+
+      if (!bestScoreResponse.ok) {
+        const errorData = await bestScoreResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const bestScore = await bestScoreResponse.json();
+
+      this._bestScore = bestScore?.[0]?.roundData?.score || 0;
+
+      this.OnBestScoreReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to fetch best score: " + error.message);
     }
   }
 
@@ -621,6 +761,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralStructureReceived);
   }
 
+  OnBestScoreReceived() {
+    this._triggerBestScoreReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnBestScoreReceived);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -660,6 +805,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetReferralStructure() {
     return this._referralStructure;
+  }
+
+  _GetBestScore() {
+    return this._bestScore;
   }
 
   _GetLastError() {
