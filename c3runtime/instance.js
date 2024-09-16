@@ -11,12 +11,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
     // Initial setup
     this._projectId = "";
-    this._referralSettingsId = "";
     this._leaderboardId = "";
     this._leaderboardApiKey = "";
     this._usersServiceApiUrl = "";
     this._leaderboardApiUrl = "";
     this._referralApiUrl = "";
+    this._mapId = 0;
 
     // Error
     this._errorMsg = "";
@@ -36,6 +36,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerReferralStructureReceived = false;
     this._triggerBestScoreReceived = false;
     this._triggerBestScoresLeaderboardReceived = false;
+    this._triggerReferralLeaderboardReceived = false;
     this._triggerError = false;
 
     // User data
@@ -51,22 +52,21 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._referralStructure = [];
 
     // Leaderboard data
-    this._mapId = 0;
     this._bestScore = 0;
     this._leaderboard = [];
     this._bestScoresLeaderboard = [];
     this._currentScore = 0;
     this._totalScore = 0;
+    this._referralLeaderboard = [];
 
     if (properties) {
       this._projectId = properties[0];
-      this._referralSettingsId = properties[1];
-      this._leaderboardId = properties[2];
-      this._leaderboardApiKey = properties[3];
-      this._usersServiceApiUrl = properties[4];
-      this._leaderboardApiUrl = properties[5];
-      this._referralApiUrl = properties[6];
-      this._mapId = properties[7];
+      this._leaderboardId = properties[1];
+      this._leaderboardApiKey = properties[2];
+      this._usersServiceApiUrl = properties[3];
+      this._leaderboardApiUrl = properties[4];
+      this._referralApiUrl = properties[5];
+      this._mapId = properties[6];
     }
   }
 
@@ -113,7 +113,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _Login(referral_code, rules_checked) {
+  async _Login(referral_settings_id, referral_code, rules_checked) {
     try {
       const hashResponse = await fetch(
         `${this._usersServiceApiUrl}/v2/auth/web3/signature/hash`,
@@ -162,8 +162,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       if (!(hasAccount && hasRulesChecked)) {
         body.rulesChecked = this.ConvertToBoolean(rules_checked);
-        if (referral_code) {
-          body.referralSettingsId = this._referralSettingsId;
+        if (referral_code && referral_settings_id) {
+          body.referralSettingsId = referral_settings_id;
           body.referralCode = referral_code;
         }
       }
@@ -307,7 +307,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
           body: JSON.stringify({
             leaderboardId: this._leaderboardId,
             projectId: this._projectId,
-            referralSettingsId: this._referralSettingsId,
             roundData: {
               score,
             },
@@ -547,6 +546,98 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     } catch (error) {
       console.log(error);
       this.HandleError("Failed to fetch best score: " + error.message);
+    }
+  }
+
+  async _RequestReferralLeaderboard(
+    ref_leaderboard_id,
+    ref_leaderboard_api_key,
+    limit,
+    min_balance,
+    max_balance
+  ) {
+    try {
+      const params = new URLSearchParams({
+        limit: limit || 20,
+        ...(min_balance && { minBalance: min_balance }),
+        ...(max_balance && { maxBalance: max_balance }),
+      }).toString();
+
+      const url = `${this._leaderboardApiUrl}/score-total/leaderboard/${ref_leaderboard_id}?${params}`;
+
+      const leaderboardResponse = await fetch(url, {
+        headers: {
+          leaderboardApiKey: ref_leaderboard_api_key,
+        },
+      });
+
+      if (!leaderboardResponse.ok) {
+        const errorData = await leaderboardResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let leaderboard = await leaderboardResponse.json();
+
+      if (leaderboard.length > 0) {
+        const requestParams = new URLSearchParams({ limit: 99999 });
+
+        leaderboard.forEach((item) =>
+          requestParams.append("userIds", item.userId)
+        );
+
+        const usersResponse = await fetch(
+          `${this._usersServiceApiUrl}/profiles?${requestParams}`
+        );
+
+        if (!usersResponse.ok) {
+          const errorData = await usersResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const { results } = await usersResponse.json();
+
+        leaderboard = leaderboard.map((player) => {
+          const user = results.find(({ userId }) => userId === player.userId);
+          const walletAddress = user?.addresses[0]?.wallet;
+
+          if (user) {
+            return {
+              userId: player.userId,
+              position: player.position,
+              currentScore: player.currentRoundData.score,
+              totalScore: player.totalRoundData.score,
+              username:
+                user?.personalDetails?.username ||
+                this.ShortenText(walletAddress, 6, 4),
+              avatar: user?.personalDetails?.avatar || "",
+            };
+          } else {
+            return {
+              userId: player.userId,
+              position: player.position,
+              currentScore: player.currentRoundData.score,
+              totalScore: player.totalRoundData.score,
+              username: player.userId,
+              avatar: "",
+            };
+          }
+        });
+      }
+
+      this._referralLeaderboard = leaderboard;
+
+      this.OnReferralLeaderboardReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to get referral leaderboard: " + error.message);
     }
   }
 
@@ -866,6 +957,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnBestScoresLeaderboardReceived);
   }
 
+  OnReferralLeaderboardReceived() {
+    this._triggerReferralLeaderboardReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralLeaderboardReceived);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -913,6 +1009,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetBestScoresLeaderboard() {
     return this._bestScoresLeaderboard;
+  }
+
+  _GetReferralLeaderboard() {
+    return this._referralLeaderboard;
   }
 
   _GetLastError() {

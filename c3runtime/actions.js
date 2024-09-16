@@ -2,8 +2,8 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestAccount() {
     await this._RequestAccount();
   },
-  async Login(referral_code, rules_checked) {
-    await this._Login(referral_code, rules_checked);
+  async Login(referral_settings_id, referral_code, rules_checked) {
+    await this._Login(referral_settings_id, referral_code, rules_checked);
   },
   async RequestLeaderboard(limit, min_balance, max_balance) {
     await this._RequestLeaderboard(limit, min_balance, max_balance);
@@ -40,5 +40,20 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   },
   async RequestBestScoresLeaderboardByMapId(limit) {
     await this._RequestBestScoresLeaderboardByMapId(limit);
+  },
+  async RequestReferralLeaderboard(
+    ref_leaderboard_id,
+    ref_leaderboard_api_key,
+    limit,
+    min_balance,
+    max_balance
+  ) {
+    await this._RequestReferralLeaderboard(
+      ref_leaderboard_id,
+      ref_leaderboard_api_key,
+      limit,
+      min_balance,
+      max_balance
+    );
   },
 };

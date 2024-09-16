@@ -11,7 +11,7 @@ const SDK = self.SDK;
 const PLUGIN_ID = "MetaproPlugin";
 ////////////////////////////////////////////
 
-const PLUGIN_VERSION = "2.1.0.0";
+const PLUGIN_VERSION = "2.2.0.0";
 const PLUGIN_CATEGORY = "platform-specific";
 
 const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
@@ -45,7 +45,6 @@ const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
 
     this._info.SetProperties([
       new SDK.PluginProperty("text", "project-id", ""),
-      new SDK.PluginProperty("text", "referral-settings-id", ""),
       new SDK.PluginProperty("text", "leaderboard-id", ""),
       new SDK.PluginProperty("text", "leaderboard-api-key", ""),
       new SDK.PluginProperty("text", "users-service-api-url", ""),

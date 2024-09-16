@@ -75,6 +75,11 @@
         "id": "on-best-scores-leaderboard-received",
         "scriptName": "OnBestScoresLeaderboardReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-referral-leaderboard-received",
+        "scriptName": "OnReferralLeaderboardReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -89,7 +94,12 @@
         "scriptName": "Login",
         "isAsync": true,
         "params": [
-          { "id": "referral-code", "type": "string" },
+          {
+            "id": "referral-settings-id",
+            "type": "string",
+            "initialValue": ""
+          },
+          { "id": "referral-code", "type": "string", "initialValue": "" },
           { "id": "rules-checked", "type": "number" }
         ]
       },
@@ -168,6 +178,18 @@
         "scriptName": "RequestBestScoresLeaderboardByMapId",
         "isAsync": true,
         "params": [{ "id": "limit", "type": "number" }]
+      },
+      {
+        "id": "request-referral-leaderboard",
+        "scriptName": "RequestReferralLeaderboard",
+        "isAsync": true,
+        "params": [
+          { "id": "ref-leaderboard-id", "type": "string" },
+          { "id": "ref-leaderboard-api-key", "type": "string" },
+          { "id": "limit", "type": "number" },
+          { "id": "min-balance", "type": "number" },
+          { "id": "max-balance", "type": "number" }
+        ]
       }
     ],
     "expressions": [
@@ -271,6 +293,14 @@
         "id": "get-best-scores-leaderboard",
         "expressionName": "GetBestScoresLeaderboard",
         "scriptName": "GetBestScoresLeaderboard",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-referral-leaderboard",
+        "expressionName": "GetReferralLeaderboard",
+        "scriptName": "GetReferralLeaderboard",
         "highlight": true,
         "returnType": "string",
         "params": []

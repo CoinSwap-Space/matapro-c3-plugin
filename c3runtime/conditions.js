@@ -119,4 +119,12 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnReferralLeaderboardReceived() {
+    if (this._triggerReferralLeaderboardReceived) {
+      this._triggerReferralLeaderboardReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };

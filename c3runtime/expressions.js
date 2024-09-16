@@ -47,4 +47,10 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonLeaderboard;
   },
+  GetReferralLeaderboard() {
+    const leaderboard = this._GetReferralLeaderboard();
+    const jsonLeaderboard = JSON.stringify(leaderboard);
+
+    return jsonLeaderboard;
+  },
 };
