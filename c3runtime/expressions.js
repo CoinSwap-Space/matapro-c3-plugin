@@ -38,4 +38,19 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonStructure;
   },
+  GetBestScore() {
+    return this._GetBestScore();
+  },
+  GetBestScoresLeaderboard() {
+    const leaderboard = this._GetBestScoresLeaderboard();
+    const jsonLeaderboard = JSON.stringify(leaderboard);
+
+    return jsonLeaderboard;
+  },
+  GetReferralLeaderboard() {
+    const leaderboard = this._GetReferralLeaderboard();
+    const jsonLeaderboard = JSON.stringify(leaderboard);
+
+    return jsonLeaderboard;
+  },
 };

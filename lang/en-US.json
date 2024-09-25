@@ -16,13 +16,13 @@
             "name": "Project ID",
             "desc": "The unique identifier for your project in Metapro."
           },
-          "referral-settings-id": {
-            "name": "Referral Settings ID",
-            "desc": "The ID for the referral settings configured in your project."
-          },
           "leaderboard-id": {
             "name": "Leaderboard ID",
             "desc": "The ID of the leaderboard used in the Metapro system."
+          },
+          "referral-leaderboard-id": {
+            "name": "Referral leaderboard ID",
+            "desc": "The ID of the referral leaderboard used in the Metapro system."
           },
           "leaderboard-api-key": {
             "name": "Leaderboard API Key",
@@ -35,6 +35,10 @@
           "referral-api-url": {
             "name": "Referral API URL",
             "desc": "The URL of the referral API used in the Metapro system."
+          },
+          "map-id": {
+            "name": "Map ID",
+            "desc": "The ID of generated map."
           }
         },
         "aceCategories": {
@@ -105,6 +109,21 @@
             "list-name": "On Error",
             "display-text": "When an error occurs",
             "description": "Triggered when an error occurs during any plugin operation."
+          },
+          "on-best-score-received": {
+            "list-name": "On Best Score Received",
+            "display-text": "Triggered when the user's best score is received.",
+            "description": "Triggered when the best score data for the user is successfully retrieved."
+          },
+          "on-best-scores-leaderboard-received": {
+            "list-name": "On Best Scores Leaderboard Received",
+            "display-text": "Triggered when the best scores leaderboard is received.",
+            "description": "Triggered when the best scores leaderboard data is successfully retrieved."
+          },
+          "on-referral-leaderboard-received": {
+            "list-name": "On Referral Leaderboard Received",
+            "display-text": "Triggered when the referral leaderboard is received.",
+            "description": "Triggered when the referral leaderboard data is successfully retrieved."
           }
         },
         "actions": {
@@ -115,9 +134,13 @@
           },
           "login": {
             "list-name": "Login",
-            "display-text": "Login user with referral code {0} and rules checked {1}",
+            "display-text": "Login user with referral settings ID {0}, referral code {1}, and rules checked {2}",
             "description": "Logs in the user using their Ethereum account. Optionally includes a referral code and checks if rules are accepted.",
             "params": {
+              "referral-settings-id": {
+                "name": "Referral Settings ID",
+                "desc": "The ID for the referral settings configured in the project."
+              },
               "referral-code": {
                 "name": "Referral Code",
                 "desc": "The referral code provided by the user, if any."
@@ -204,6 +227,60 @@
             "list-name": "Request Referral Structure",
             "display-text": "Request the referral structure for the user.",
             "description": "Retrieves the referral downline structure, including level, total score, user count, and percentage of each level in the referral system."
+          },
+          "add-score": {
+            "list-name": "Add score",
+            "display-text": "Add score {0}",
+            "description": "Add a new entry score for user.",
+            "params": {
+              "score": {
+                "name": "Score",
+                "desc": "The score earned by the user."
+              }
+            }
+          },
+          "request-best-score": {
+            "list-name": "Request Best Score",
+            "display-text": "Request the best score for the user.",
+            "description": "Retrieves the highest score achieved by the user."
+          },
+          "request-best-scores-leaderboard-by-map-id": {
+            "list-name": "Request Best Scores Leaderboard",
+            "display-text": "Request the best scores leaderboard with limit {0}",
+            "description": "Requests the leaderboard data showing the best scores for a specific map, with an optional limit.",
+            "params": {
+              "limit": {
+                "name": "Limit",
+                "desc": "The maximum number of leaderboard entries to retrieve."
+              }
+            }
+          },
+          "request-referral-leaderboard": {
+            "list-name": "Request Referral Leaderboard",
+            "display-text": "Request referral leaderboard with ID {0}, API key {1}, limit {2}, minimum balance {3}, and maximum balance {4}",
+            "description": "Requests referral leaderboard data for a specific score range with a defined limit.",
+            "params": {
+              "ref-leaderboard-id": {
+                "name": "Referral Leaderboard ID",
+                "desc": "The unique identifier for the referral leaderboard."
+              },
+              "ref-leaderboard-api-key": {
+                "name": "Referral Leaderboard API Key",
+                "desc": "The API key required to access the referral leaderboard."
+              },
+              "limit": {
+                "name": "Limit",
+                "desc": "The maximum number of leaderboard entries to retrieve."
+              },
+              "min-balance": {
+                "name": "Min Balance",
+                "desc": "Minimum balance to display."
+              },
+              "max-balance": {
+                "name": "Max Balance",
+                "desc": "Maximum balance to display."
+              }
+            }
           }
         },
         "expressions": {
@@ -260,6 +337,21 @@
           "get-referral-structure": {
             "description": "Get the user's referral downline structure.",
             "translated-name": "Get Referral Downline Structure",
+            "params": {}
+          },
+          "get-best-score": {
+            "description": "Get the user's highest score.",
+            "translated-name": "Get Best Score",
+            "params": {}
+          },
+          "get-best-scores-leaderboard": {
+            "description": "Get the leaderboard showing the user's highest scores.",
+            "translated-name": "Get Best Scores Leaderboard",
+            "params": {}
+          },
+          "get-referral-leaderboard": {
+            "description": "Get the leaderboard showing the user's referral-based scores.",
+            "translated-name": "Get Referral Leaderboard",
             "params": {}
           }
         }
