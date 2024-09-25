@@ -1019,6 +1019,34 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return this._errorMsg;
   }
 
+  _GetProjectId() {
+    return this._projectId;
+  }
+
+  _GetLeaderboardId() {
+    return this._leaderboardId;
+  }
+
+  _GetLeaderboardApiKey() {
+    return this._leaderboardApiKey;
+  }
+
+  _GetUsersServiceApiUrl() {
+    return this._usersServiceApiUrl;
+  }
+
+  _GetLeaderboardApiUrl() {
+    return this._leaderboardApiUrl;
+  }
+
+  _GetReferralApiUrl() {
+    return this._referralApiUrl;
+  }
+
+  _GetMapId() {
+    return this._mapId;
+  }
+
   Release() {
     super.Release();
   }

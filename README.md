@@ -91,6 +91,13 @@ The metapro Plugin addon is available for download along with project examples. 
 | **Get Referral Structure**      | Retrieve the user's referral downline structure, including downline levels, total scores, and user count. |
 | **Get Referral Leaderboard**    | Retrieve the referral leaderboard data.                                                                   |
 | **Get Last Error**              | Retrieve the last error message encountered by the plugin.                                                |
+| **Get Project Id**              | Retrieve the project ID.                                                                                  |
+| **Get Leaderboard Id**          | Retrieve the leaderboard ID.                                                                              |
+| **Get Leaderboard Api Key**     | Retrieve the API key for the leaderboard.                                                                 |
+| **Get Users Service Api Url**   | Retrieve the URL of the users service API.                                                                |
+| **Get Leaderboard Api Url**     | Retrieve the URL of the leaderboard API.                                                                  |
+| **Get Referral Api Url**        | Retrieve the URL of the referral API.                                                                     |
+| **Get Map Id**                  | Retrieve the map ID.                                                                                      |
 
 ## Author
 
