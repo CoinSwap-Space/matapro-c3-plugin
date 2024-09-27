@@ -304,6 +304,62 @@
         "highlight": true,
         "returnType": "string",
         "params": []
+      },
+      {
+        "id": "get-project-id",
+        "expressionName": "GetProjectId",
+        "scriptName": "GetProjectId",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-leaderboard-id",
+        "expressionName": "GetLeaderboardId",
+        "scriptName": "GetLeaderboardId",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-leaderboard-api-key",
+        "expressionName": "GetLeaderboardApiKey",
+        "scriptName": "GetLeaderboardApiKey",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-users-service-api-url",
+        "expressionName": "GetUsersServiceApiUrl",
+        "scriptName": "GetUsersServiceApiUrl",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-leaderboard-api-url",
+        "expressionName": "GetLeaderboardApiUrl",
+        "scriptName": "GetLeaderboardApiUrl",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-referral-api-url",
+        "expressionName": "GetReferralApiUrl",
+        "scriptName": "GetReferralApiUrl",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-map-id",
+        "expressionName": "GetMapId",
+        "scriptName": "GetMapId",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
       }
     ]
   }

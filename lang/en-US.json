@@ -353,6 +353,41 @@
             "description": "Get the leaderboard showing the user's referral-based scores.",
             "translated-name": "Get Referral Leaderboard",
             "params": {}
+          },
+          "get-project-id": {
+            "description": "Get the project ID associated with the current session.",
+            "translated-name": "Get Project ID",
+            "params": {}
+          },
+          "get-leaderboard-id": {
+            "description": "Get the leaderboard ID associated with the current project.",
+            "translated-name": "Get Leaderboard ID",
+            "params": {}
+          },
+          "get-leaderboard-api-key": {
+            "description": "Get the API key for accessing the leaderboard services.",
+            "translated-name": "Get Leaderboard API Key",
+            "params": {}
+          },
+          "get-users-service-api-url": {
+            "description": "Get the URL for accessing the user service API.",
+            "translated-name": "Get Users Service API URL",
+            "params": {}
+          },
+          "get-leaderboard-api-url": {
+            "description": "Get the URL for accessing the leaderboard API.",
+            "translated-name": "Get Leaderboard API URL",
+            "params": {}
+          },
+          "get-referral-api-url": {
+            "description": "Get the API URL for referral services.",
+            "translated-name": "Get Referral API URL",
+            "params": {}
+          },
+          "get-map-id": {
+            "description": "Get the map ID for the current project.",
+            "translated-name": "Get Map ID",
+            "params": {}
           }
         }
       }

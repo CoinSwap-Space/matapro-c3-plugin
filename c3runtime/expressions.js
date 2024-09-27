@@ -53,4 +53,25 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonLeaderboard;
   },
+  GetProjectId() {
+    return this._GetProjectId();
+  },
+  GetLeaderboardId() {
+    return this._GetLeaderboardId();
+  },
+  GetLeaderboardApiKey() {
+    return this._GetLeaderboardApiKey();
+  },
+  GetUsersServiceApiUrl() {
+    return this._GetUsersServiceApiUrl();
+  },
+  GetLeaderboardApiUrl() {
+    return this._GetLeaderboardApiUrl();
+  },
+  GetReferralApiUrl() {
+    return this._GetReferralApiUrl();
+  },
+  GetMapId() {
+    return this._GetMapId();
+  },
 };
