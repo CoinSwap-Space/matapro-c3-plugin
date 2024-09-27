@@ -37,6 +37,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerBestScoreReceived = false;
     this._triggerBestScoresLeaderboardReceived = false;
     this._triggerReferralLeaderboardReceived = false;
+    this._triggerTransactionSent = false;
     this._triggerError = false;
 
     // User data
@@ -58,6 +59,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._currentScore = 0;
     this._totalScore = 0;
     this._referralLeaderboard = [];
+
+    this._lastTransactionHash = null;
 
     if (properties) {
       this._projectId = properties[0];
@@ -96,6 +99,42 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._errorMsg = errorMsg;
     this._triggerError = true;
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnError);
+  }
+
+  GetFunctionFromAbi(abi, functionName) {
+    for (const abiItem of abi) {
+      if (abiItem.type === "function" && abiItem.name === functionName)
+        return abiItem;
+    }
+    return null;
+  }
+
+  GetFunctionSignature(functionAbi) {
+    return `${functionAbi.name}(${functionAbi.inputs
+      .map((el) => el.type)
+      .join(",")})`;
+  }
+
+  EncodeParameter(type, value) {
+    if (type === "address") {
+      // Remove '0x' and pad the address to 64 hex characters (32 bytes)
+      return value.toLowerCase().replace(/^0x/, "").padStart(64, "0");
+    } else if (type.startsWith("uint")) {
+      // Convert to BigInt and pad to 64 hex characters (32 bytes)
+      return BigInt(value).toString(16).padStart(64, "0");
+    } else if (type === "bytes") {
+      // Handle empty bytes (0x0 specifically)
+      if (value === "0x0" || value === "0x" || value === "") {
+        return "0".repeat(64); // Pad empty bytes to 32 bytes (64 hex characters)
+      }
+      // Remove '0x' and pad the value to a multiple of 32 bytes (64 hex characters)
+      return value.replace(/^0x/, "").padEnd(64, "0");
+    } else if (type === "bool") {
+      // Handle boolean values, where true is encoded as 1 and false as 0
+      return value ? "1".padStart(64, "0") : "0".padStart(64, "0");
+    } else {
+      throw new Error(`Unsupported type: ${type}`);
+    }
   }
 
   // Actions
@@ -886,6 +925,79 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _SendContractTransaction(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    chain_id
+  ) {
+    try {
+      if (!this._account) {
+        throw new Error("Account information is missing or not initialized.");
+      }
+
+      const parsedAbi = JSON.parse(abi);
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const functionSignature = this.GetFunctionSignature(functionAbi);
+      const inputData = JSON.parse(
+        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+      );
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+
+      if (!keccak256) {
+        throw new Error("keccak256 library is not loaded or unavailable.");
+      }
+
+      const keccak256Hash = keccak256(functionSignature).toString("hex");
+      const functionSelector = keccak256Hash.substring(0, 8);
+
+      let data = "0x" + functionSelector;
+
+      // Track dynamic data separately
+      let staticDataLength = 0;
+      // Loop through the inputs
+      functionAbi.inputs.forEach((input, index) => {
+        const value = inputData[index];
+
+        if (input.internalType === "bytes") {
+          // Handle dynamic type: bytes
+          const offset = (functionAbi.inputs.length + staticDataLength) * 32; // Offset for dynamic data
+          data += offset.toString(16).padStart(64, "0");
+        }
+        const encoded = this.EncodeParameter(input.internalType, value);
+        data += encoded;
+      });
+
+      const txParams = {
+        from: this._account,
+        to: contract_address,
+        data: data,
+      };
+
+      await this.PostToDOMAsync("switch-chain", chain_id);
+
+      const txHash = await this.PostToDOMAsync("send-transaction", txParams);
+
+      this._lastTransactionHash = txHash;
+
+      this.OnTransactionSent();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to send transaction: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -962,6 +1074,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralLeaderboardReceived);
   }
 
+  OnTransactionSent() {
+    this._triggerTransactionSent = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnTransactionSent);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -1013,6 +1130,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetReferralLeaderboard() {
     return this._referralLeaderboard;
+  }
+
+  _GetLastTransactionHash() {
+    return this._lastTransactionHash;
   }
 
   _GetLastError() {

@@ -56,4 +56,19 @@ self.C3.Plugins.MetaproPlugin.Acts = {
       max_balance
     );
   },
+  async SendContractTransaction(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    chain_id
+  ) {
+    await this._SendContractTransaction(
+      contract_address,
+      abi,
+      function_name,
+      input_data,
+      chain_id
+    );
+  },
 };

@@ -1,7 +1,4 @@
 self.C3.Plugins.MetaproPlugin.Exps = {
-  GetLastError() {
-    return this._GetLastError();
-  },
   GetAccount() {
     return this._GetAccount();
   },
@@ -52,6 +49,12 @@ self.C3.Plugins.MetaproPlugin.Exps = {
     const jsonLeaderboard = JSON.stringify(leaderboard);
 
     return jsonLeaderboard;
+  },
+  GetLastTransactionHash() {
+    return this._GetLastTransactionHash();
+  },
+  GetLastError() {
+    return this._GetLastError();
   },
   GetProjectId() {
     return this._GetProjectId();

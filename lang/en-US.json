@@ -124,6 +124,11 @@
             "list-name": "On Referral Leaderboard Received",
             "display-text": "Triggered when the referral leaderboard is received.",
             "description": "Triggered when the referral leaderboard data is successfully retrieved."
+          },
+          "on-transaction-sent": {
+            "list-name": "On Transaction Sent",
+            "display-text": "Triggered when a transaction is sent.",
+            "description": "Triggered when a transaction is successfully sent and the transaction hash is received."
           }
         },
         "actions": {
@@ -281,14 +286,36 @@
                 "desc": "Maximum balance to display."
               }
             }
+          },
+          "send-contract-transaction": {
+            "list-name": "Send contract transaction",
+            "display-text": "Send a transaction to the contract at address {0} using the ABI {1}, function {2}, with input data {3}, on chain ID {4}.",
+            "description": "Sends a transaction to interact with a smart contract at the specified address using the provided ABI, function name, input data, and target chain ID.",
+            "params": {
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "Address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-name": {
+                "name": "Function Name",
+                "desc": "The name of the function being called in the ABI, provided as a JSON stringified representation."
+              },
+              "input-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the input data required for the function call. Example format: \"{'_to':'123','_tokenId':1,'_amount':1}\"."
+              },
+              "chain-id": {
+                "name": "Chain ID",
+                "desc": "The target chain ID in decimals."
+              }
+            }
           }
         },
         "expressions": {
-          "get-last-error": {
-            "description": "Get the most recent error message encountered by the plugin.",
-            "translated-name": "Get Last Error",
-            "params": {}
-          },
           "get-account": {
             "description": "Get the current user's Ethereum account.",
             "translated-name": "Get Account",
@@ -352,6 +379,16 @@
           "get-referral-leaderboard": {
             "description": "Get the leaderboard showing the user's referral-based scores.",
             "translated-name": "Get Referral Leaderboard",
+            "params": {}
+          },
+          "get-last-transaction-hash": {
+            "description": "Get the hash of the most recent transaction sent by the plugin.",
+            "translated-name": "Get Last Transaction Hash",
+            "params": {}
+          },
+          "get-last-error": {
+            "description": "Get the most recent error message encountered by the plugin.",
+            "translated-name": "Get Last Error",
             "params": {}
           },
           "get-project-id": {

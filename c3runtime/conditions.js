@@ -127,4 +127,12 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnTransactionSent() {
+    if (this._triggerTransactionSent) {
+      this._triggerTransactionSent = false;
+      return true;
+    }
+
+    return false;
+  },
 };

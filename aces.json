@@ -80,6 +80,11 @@
         "id": "on-referral-leaderboard-received",
         "scriptName": "OnReferralLeaderboardReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-transaction-sent",
+        "scriptName": "OnTransactionSent",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -190,17 +195,21 @@
           { "id": "min-balance", "type": "number" },
           { "id": "max-balance", "type": "number" }
         ]
+      },
+      {
+        "id": "send-contract-transaction",
+        "scriptName": "SendContractTransaction",
+        "isAsync": true,
+        "params": [
+          { "id": "contract-address", "type": "string" },
+          { "id": "abi", "type": "string" },
+          { "id": "function-name", "type": "string" },
+          { "id": "input-data", "type": "string" },
+          { "id": "chain-id", "type": "number" }
+        ]
       }
     ],
     "expressions": [
-      {
-        "id": "get-last-error",
-        "expressionName": "GetLastError",
-        "scriptName": "GetLastError",
-        "highlight": false,
-        "returnType": "string",
-        "params": []
-      },
       {
         "id": "get-account",
         "expressionName": "GetAccount",
@@ -302,6 +311,22 @@
         "expressionName": "GetReferralLeaderboard",
         "scriptName": "GetReferralLeaderboard",
         "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-last-transaction-hash",
+        "expressionName": "GetLastTransactionHash",
+        "scriptName": "GetLastTransactionHash",
+        "highlight": false,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-last-error",
+        "expressionName": "GetLastError",
+        "scriptName": "GetLastError",
+        "highlight": false,
         "returnType": "string",
         "params": []
       },

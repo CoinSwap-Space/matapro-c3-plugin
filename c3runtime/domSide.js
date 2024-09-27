@@ -22,9 +22,22 @@
     constructor(iRuntime) {
       super(iRuntime, DOM_COMPONENT_ID);
 
+      // Add keccak256 library
+      var keccakScriptEl = document.createElement("script");
+      keccakScriptEl.type = "text/javascript";
+      keccakScriptEl.src =
+        "https://cdn.jsdelivr.net/npm/keccak256@latest/keccak256.js";
+      document.getElementsByTagName("head")[0].appendChild(keccakScriptEl);
+
+      keccakScriptEl.onload = function () {
+        console.log("keccak256 library loaded successfully!");
+      };
+
       this.AddRuntimeMessageHandlers([
         ["eth-request-accounts", () => this._ETHRequestAccounts()],
         ["get-signature", (payload) => this._GetSignature(payload)],
+        ["send-transaction", (txParams) => this._SendTransaction(txParams)],
+        ["switch-chain", (chainId) => this._SwitchChain(chainId)],
       ]);
     }
     // Custom method to handle messages
@@ -60,6 +73,39 @@
       }
 
       return signature;
+    }
+
+    async _SendTransaction(txParams) {
+      const provider = window.ethereum;
+      const gasPrice = await window.ethereum.request({
+        method: "eth_gasPrice",
+      });
+      const estimatedGas = await provider.request({
+        method: "eth_estimateGas",
+        params: [txParams],
+      });
+
+      const txHash = await provider.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            ...txParams,
+            gas: estimatedGas.toString(16),
+            gasPrice: parseInt(gasPrice).toString(16),
+          },
+        ],
+      });
+
+      return txHash;
+    }
+
+    async _SwitchChain(chainId) {
+      const provider = window.ethereum;
+
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: `0x${chainId.toString(16)}` }],
+      });
     }
   };
 
