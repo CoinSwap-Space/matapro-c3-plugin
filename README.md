@@ -2,12 +2,44 @@
 
 ## Features
 
-- Support for managing user accounts, including requesting Ethereum accounts and logging in with Web3 authentication.
-- Integration with leaderboard systems, including querying and retrieving leaderboard data.
-- Ability to update user information, including username and avatar.
-- Support for generating, retrieving, and managing referral codes and referral structures.
-- Support for updating and retrieving user scores.
-- Event callbacks for handling user account actions, leaderboard data retrieval, registration checks, score updates, referral code checks, and error handling.
+- **Account Management**:
+  - Request and manage Ethereum accounts.
+  - Support for Web3 authentication for user logins.
+  
+- **Leaderboard Integration**:
+
+  - Query and retrieve leaderboard data.
+  - Retrieve best scores, current score, total score, and referral leaderboard data.
+
+- **User Information Management**:
+
+  - Update and retrieve user data like usernames, avatars, and authentication tokens.
+
+- **Referral System Integration**:
+
+  - Generate, retrieve, and manage referral codes.
+  - View referral structures, including downline information, referral scores, and leaderboard rankings.
+
+- **Score Management**:
+
+  - Add, update, and retrieve user scores.
+  - Access current, best, and total scores from the leaderboard.
+
+- **Smart Contract Interaction**:
+
+  - Send transactions to interact with smart contracts using a provided ABI, function name, input data, and chain ID.
+
+- **Event Triggers**:
+
+  - Event handling for actions like user login, leaderboard data retrieval, score updates, referral code management, and transaction events.
+  - Error handling for plugin operations.
+
+- **Map-based Runs**:
+
+  - Request and retrieve the number of user runs, with an optional map ID parameter.
+
+- **Custom Error Handling**:
+  - Retrieve the last error message encountered by the plugin for debugging and user notification purposes.
 
 ## Installation
 
