@@ -85,6 +85,11 @@
         "id": "on-transaction-sent",
         "scriptName": "OnTransactionSent",
         "isTrigger": true
+      },
+      {
+        "id": "on-number-of-runs-received",
+        "scriptName": "OnNumberOfRunsReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -207,6 +212,12 @@
           { "id": "input-data", "type": "string" },
           { "id": "chain-id", "type": "number" }
         ]
+      },
+      {
+        "id": "request-number-of-runs",
+        "scriptName": "RequestNumberOfRuns",
+        "isAsync": true,
+        "params": [{ "id": "map-id", "type": "number" }]
       }
     ],
     "expressions": [
@@ -315,6 +326,14 @@
         "params": []
       },
       {
+        "id": "get-number-of-runs",
+        "expressionName": "GetNumberOfRuns",
+        "scriptName": "GetNumberOfRuns",
+        "highlight": false,
+        "returnType": "number",
+        "params": []
+      },
+      {
         "id": "get-last-transaction-hash",
         "expressionName": "GetLastTransactionHash",
         "scriptName": "GetLastTransactionHash",
@@ -383,7 +402,7 @@
         "expressionName": "GetMapId",
         "scriptName": "GetMapId",
         "highlight": true,
-        "returnType": "string",
+        "returnType": "number",
         "params": []
       }
     ]

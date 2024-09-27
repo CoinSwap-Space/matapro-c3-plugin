@@ -135,4 +135,12 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnNumberOfRunsReceived() {
+    if (this._triggerNumberOfRunsReceived) {
+      this._triggerNumberOfRunsReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };

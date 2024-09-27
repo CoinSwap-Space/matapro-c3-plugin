@@ -52,6 +52,7 @@ The metapro Plugin addon is available for download along with project examples. 
 | **Request Referral Structure**      | Retrieve the user's referral downline structure, including referral levels, total scores, user count, and percentages. | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Request Referral Leaderboard**    | Request the referral leaderboard for the user.                                                                         | **Referral Leaderboard ID**: The ID of the referral leaderboard.<br>**Referral Leaderboard API Key**: The API key for accessing the referral leaderboard.<br>**Limit**: The maximum number of leaderboard entries to retrieve (default 20).<br>**Min Balance**: Minimum balance to display.<br>**Max Balance**: Maximum balance to display.                                                                                                                                                 |
 | **Send Contract Transaction**       | Send a transaction to interact with a smart contract based on the provided ABI, input data, and chain ID.              | **Contract Address**: The address of the smart contract.<br>**ABI**: A JSON stringified representation of the ABI (Application Binary Interface).<br>**Function Name**: The name of the function being called in the ABI, provided as a JSON stringified representation.<br>**Input Data**: A JSON stringified representation of the input data required for the function call. Example format: `{'_to':'123','_tokenId':1,'_amount':1}`.<br>**Chain ID**: The target chain ID in decimals. |
+| **Request Number of Runs**          | Request the total number of runs for the user, with an optional map ID.                                                | **Map ID** (optional): The unique identifier of the map (number).                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ### Conditions
 
@@ -73,6 +74,7 @@ The metapro Plugin addon is available for download along with project examples. 
 | **On Referral Structure Received**      | Triggered when the user's referral structure is successfully retrieved.                |
 | **On Referral Leaderboard Received**    | Triggered when the referral leaderboard data is successfully retrieved.                |
 | **On Transaction Sent**                 | Triggered when a transaction is successfully sent.                                     |
+| **On Number of Runs Received**          | Triggered when the number of runs for the user is successfully retrieved.              |
 | **On Error**                            | Triggered when an error occurs during any plugin operation.                            |
 
 ### Expressions
@@ -92,6 +94,7 @@ The metapro Plugin addon is available for download along with project examples. 
 | **Get Referral Code**           | Retrieve the user's referral code.                                                                        |
 | **Get Referral Structure**      | Retrieve the user's referral downline structure, including downline levels, total scores, and user count. |
 | **Get Referral Leaderboard**    | Retrieve the referral leaderboard data.                                                                   |
+| **Get Number of Runs**          | Retrieve the number of runs for the user.                                                                 |
 | **Get Last Transaction Hash**   | Retrieve the hash of the most recent transaction sent by the plugin.                                      |
 | **Get Last Error**              | Retrieve the last error message encountered by the plugin.                                                |
 | **Get Project Id**              | Retrieve the project ID.                                                                                  |

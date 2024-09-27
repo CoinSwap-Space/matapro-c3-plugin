@@ -50,6 +50,9 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonLeaderboard;
   },
+  GetNumberOfRuns() {
+    return this._GetNumberOfRuns();
+  },
   GetLastTransactionHash() {
     return this._GetLastTransactionHash();
   },

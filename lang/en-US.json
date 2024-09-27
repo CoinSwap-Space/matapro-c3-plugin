@@ -129,6 +129,11 @@
             "list-name": "On Transaction Sent",
             "display-text": "Triggered when a transaction is sent.",
             "description": "Triggered when a transaction is successfully sent and the transaction hash is received."
+          },
+          "on-number-of-runs-received": {
+            "list-name": "On Number of Runs Received",
+            "display-text": "Triggered when the number of runs is received.",
+            "description": "Triggered when the total number of runs for the user is successfully retrieved."
           }
         },
         "actions": {
@@ -313,6 +318,17 @@
                 "desc": "The target chain ID in decimals."
               }
             }
+          },
+          "request-number-of-runs": {
+            "list-name": "Request Number of Runs",
+            "display-text": "Request the number of runs for map {0}",
+            "description": "Retrieve the number of runs or attempts made for a specific map.",
+            "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The unique identifier of the map (optional)."
+              }
+            }
           }
         },
         "expressions": {
@@ -384,6 +400,11 @@
           "get-last-transaction-hash": {
             "description": "Get the hash of the most recent transaction sent by the plugin.",
             "translated-name": "Get Last Transaction Hash",
+            "params": {}
+          },
+          "get-number-of-runs": {
+            "description": "Get the total number of runs for the user.",
+            "translated-name": "Get Number of Runs",
             "params": {}
           },
           "get-last-error": {

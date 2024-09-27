@@ -71,4 +71,7 @@ self.C3.Plugins.MetaproPlugin.Acts = {
       chain_id
     );
   },
+  async RequestNumberOfRuns(map_id) {
+    await this._RequestNumberOfRuns(map_id);
+  },
 };

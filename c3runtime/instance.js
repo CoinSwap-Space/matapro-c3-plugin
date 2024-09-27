@@ -38,6 +38,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerBestScoresLeaderboardReceived = false;
     this._triggerReferralLeaderboardReceived = false;
     this._triggerTransactionSent = false;
+    this._triggerNumberOfRunsReceived = false;
     this._triggerError = false;
 
     // User data
@@ -59,6 +60,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._currentScore = 0;
     this._totalScore = 0;
     this._referralLeaderboard = [];
+    this._numberOfRuns = 0;
 
     this._lastTransactionHash = null;
 
@@ -998,6 +1000,41 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _RequestNumberOfRuns(map_id) {
+    try {
+      const params = new URLSearchParams({
+        leaderboardId: this._leaderboardId,
+        ...(map_id && { map: map_id }),
+      }).toString();
+
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-map/get/count/${this._userId}?${params}`,
+        {
+          headers: {
+            leaderboardApiKey: this._leaderboardApiKey,
+          },
+        }
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const count = Number(await countResponse.text());
+      this._numberOfRuns = count;
+
+      this.OnNumberOfRunsReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Requesting user score failed: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -1079,6 +1116,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnTransactionSent);
   }
 
+  OnNumberOfRunsReceived() {
+    this._triggerNumberOfRunsReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnNumberOfRunsReceived);
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -1130,6 +1172,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetReferralLeaderboard() {
     return this._referralLeaderboard;
+  }
+
+  _GetNumberOfRuns() {
+    return this._numberOfRuns;
   }
 
   _GetLastTransactionHash() {
