@@ -100,12 +100,14 @@
     }
 
     async _SwitchChain(chainId) {
-      const provider = window.ethereum;
+      if (!window?.metapro?.isMetapro) {
+        const provider = window.ethereum;
 
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${chainId.toString(16)}` }],
-      });
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: `0x${chainId.toString(16)}` }],
+        });
+      }
     }
   };
 
