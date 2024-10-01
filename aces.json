@@ -90,6 +90,16 @@
         "id": "on-number-of-runs-received",
         "scriptName": "OnNumberOfRunsReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-ref-code-from-deeplink-exists",
+        "scriptName": "OnRefCodeFromDeeplinkExists",
+        "isTrigger": true
+      },
+      {
+        "id": "on-user-nfts-received",
+        "scriptName": "OnUserNftsReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -175,19 +185,25 @@
         "id": "add-score",
         "scriptName": "AddScore",
         "isAsync": true,
-        "params": [{ "id": "score", "type": "number" }]
+        "params": [
+          { "id": "score", "type": "number" },
+          { "id": "map-id", "type": "number" }
+        ]
       },
       {
         "id": "request-best-score",
         "scriptName": "RequestBestScore",
         "isAsync": true,
-        "params": []
+        "params": [{ "id": "map-id", "type": "number" }]
       },
       {
         "id": "request-best-scores-leaderboard-by-map-id",
         "scriptName": "RequestBestScoresLeaderboardByMapId",
         "isAsync": true,
-        "params": [{ "id": "limit", "type": "number" }]
+        "params": [
+          { "id": "map-id", "type": "number" },
+          { "id": "limit", "type": "number" }
+        ]
       },
       {
         "id": "request-referral-leaderboard",
@@ -218,6 +234,20 @@
         "scriptName": "RequestNumberOfRuns",
         "isAsync": true,
         "params": [{ "id": "map-id", "type": "number" }]
+      },
+      {
+        "id": "check-referral-code-from-deeplink",
+        "scriptName": "CheckReferralCodeFromDeeplink",
+        "params": []
+      },
+      {
+        "id": "request-user-nfts",
+        "scriptName": "RequestUserNfts",
+        "isAsync": true,
+        "params": [
+          { "id": "token-ids", "type": "string" },
+          { "id": "contract-address", "type": "string" }
+        ]
       }
     ],
     "expressions": [
@@ -398,11 +428,27 @@
         "params": []
       },
       {
-        "id": "get-map-id",
-        "expressionName": "GetMapId",
-        "scriptName": "GetMapId",
+        "id": "get-platform-id",
+        "expressionName": "GetPlatformId",
+        "scriptName": "GetPlatformId",
         "highlight": true,
-        "returnType": "number",
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-ref-code-from-deeplink",
+        "expressionName": "GetRefCodeFromDeeplink",
+        "scriptName": "GetRefCodeFromDeeplink",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-user-nfts",
+        "expressionName": "GetUserNfts",
+        "scriptName": "GetUserNfts",
+        "highlight": true,
+        "returnType": "string",
         "params": []
       }
     ]

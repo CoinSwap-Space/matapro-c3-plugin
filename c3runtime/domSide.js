@@ -38,6 +38,10 @@
         ["get-signature", (payload) => this._GetSignature(payload)],
         ["send-transaction", (txParams) => this._SendTransaction(txParams)],
         ["switch-chain", (chainId) => this._SwitchChain(chainId)],
+        [
+          "get-referral-code-from-deeplink",
+          () => this._GetReferralCodeFromDeeplink(),
+        ],
       ]);
     }
     // Custom method to handle messages
@@ -108,6 +112,10 @@
           params: [{ chainId: `0x${chainId.toString(16)}` }],
         });
       }
+    }
+
+    _GetReferralCodeFromDeeplink() {
+      return window.metapro?.queryParams?.refCode;
     }
   };
 

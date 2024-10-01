@@ -32,14 +32,14 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestReferralStructure() {
     await this._RequestReferralStructure();
   },
-  async AddScore(score) {
-    await this._AddScore(score);
+  async AddScore(score, map_id) {
+    await this._AddScore(score, map_id);
   },
-  async RequestBestScore() {
-    await this._RequestBestScore();
+  async RequestBestScore(map_id) {
+    await this._RequestBestScore(map_id);
   },
-  async RequestBestScoresLeaderboardByMapId(limit) {
-    await this._RequestBestScoresLeaderboardByMapId(limit);
+  async RequestBestScoresLeaderboardByMapId(map_id, limit) {
+    await this._RequestBestScoresLeaderboardByMapId(map_id, limit);
   },
   async RequestReferralLeaderboard(
     ref_leaderboard_id,
@@ -73,5 +73,11 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   },
   async RequestNumberOfRuns(map_id) {
     await this._RequestNumberOfRuns(map_id);
+  },
+  CheckReferralCodeFromDeeplink() {
+    this._CheckReferralCodeFromDeeplink();
+  },
+  async RequestUserNfts(token_ids, contract_address) {
+    await this._RequestUserNfts(token_ids, contract_address);
   },
 };

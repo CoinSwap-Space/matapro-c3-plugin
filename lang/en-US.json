@@ -34,11 +34,15 @@
           },
           "referral-api-url": {
             "name": "Referral API URL",
-            "desc": "The URL of the referral API used in the Metapro system."
+            "desc": "The URL of the Referral API used in the Metapro system."
           },
-          "map-id": {
-            "name": "Map ID",
-            "desc": "The ID of generated map."
+          "nft-api-url": {
+            "name": "Nft API URL",
+            "desc": "The URL of the Nft API used in the Metapro system."
+          },
+          "platform-id": {
+            "name": "Platform ID",
+            "desc": "The ID of platform."
           }
         },
         "aceCategories": {
@@ -134,6 +138,16 @@
             "list-name": "On Number of Runs Received",
             "display-text": "Triggered when the number of runs is received.",
             "description": "Triggered when the total number of runs for the user is successfully retrieved."
+          },
+          "on-ref-code-from-deeplink-exists": {
+            "list-name": "On Referral Code from Deeplink Exists",
+            "display-text": "Triggered when the referral code from the deeplink exists.",
+            "description": "Triggered when a referral code is successfully retrieved from the provided deeplink."
+          },
+          "on-user-nfts-received": {
+            "list-name": "On User NFTs Received",
+            "display-text": "Triggered when the user's NFTs are received.",
+            "description": "Triggered when the NFTs owned by the user are successfully retrieved."
           }
         },
         "actions": {
@@ -240,25 +254,39 @@
           },
           "add-score": {
             "list-name": "Add score",
-            "display-text": "Add score {0}",
+            "display-text": "Add score {0} for map ID {1}",
             "description": "Add a new entry score for user.",
             "params": {
               "score": {
                 "name": "Score",
                 "desc": "The score earned by the user."
+              },
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
               }
             }
           },
           "request-best-score": {
             "list-name": "Request Best Score",
-            "display-text": "Request the best score for the user.",
-            "description": "Retrieves the highest score achieved by the user."
+            "display-text": "Request the best score for the user for map {0}.",
+            "description": "Retrieves the highest score achieved by the user.",
+            "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
+              }
+            }
           },
           "request-best-scores-leaderboard-by-map-id": {
             "list-name": "Request Best Scores Leaderboard",
-            "display-text": "Request the best scores leaderboard with limit {0}",
+            "display-text": "Request the best scores leaderboard for map {0} with limit {1}",
             "description": "Requests the leaderboard data showing the best scores for a specific map, with an optional limit.",
             "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
+              },
               "limit": {
                 "name": "Limit",
                 "desc": "The maximum number of leaderboard entries to retrieve."
@@ -327,6 +355,26 @@
               "map-id": {
                 "name": "Map ID",
                 "desc": "The unique identifier of the map (optional)."
+              }
+            }
+          },
+          "check-referral-code-from-deeplink": {
+            "list-name": "Check Referral Code from Deeplink",
+            "display-text": "Check if a referral code exists in the provided deeplink.",
+            "description": "Validates and checks if a referral code is present in a given deeplink."
+          },
+          "request-user-nfts": {
+            "list-name": "Request User NFTs",
+            "display-text": "Request NFTs owned by the user with token IDs {0} and contract address {1}",
+            "description": "Requests data for NFTs owned by the user, filtered by specific token IDs and contract address.",
+            "params": {
+              "token-ids": {
+                "name": "Token IDs",
+                "desc": "A list of token IDs to filter the NFTs."
+              },
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "The address of the smart contract to filter the NFTs."
               }
             }
           }
@@ -442,9 +490,19 @@
             "translated-name": "Get Referral API URL",
             "params": {}
           },
-          "get-map-id": {
-            "description": "Get the map ID for the current project.",
-            "translated-name": "Get Map ID",
+          "get-platform-id": {
+            "description": "Get the platform ID for the current project.",
+            "translated-name": "Get Platform ID",
+            "params": {}
+          },
+          "get-ref-code-from-deeplink": {
+            "description": "Get the referral code from the provided deeplink.",
+            "translated-name": "Get Referral Code from Deeplink",
+            "params": {}
+          },
+          "get-user-nfts": {
+            "description": "Get the NFTs owned by the user.",
+            "translated-name": "Get User NFTs",
             "params": {}
           }
         }

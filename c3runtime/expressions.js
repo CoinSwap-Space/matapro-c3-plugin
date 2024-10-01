@@ -77,7 +77,16 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetReferralApiUrl() {
     return this._GetReferralApiUrl();
   },
-  GetMapId() {
-    return this._GetMapId();
+  GetPlatformId() {
+    return this._GetPlatformId();
+  },
+  GetRefCodeFromDeeplink() {
+    return this._GetRefCodeFromDeeplink();
+  },
+  GetUserNfts() {
+    const nfts = this._GetUserNfts();
+    const jsonNfts = JSON.stringify(nfts);
+
+    return jsonNfts;
   },
 };
