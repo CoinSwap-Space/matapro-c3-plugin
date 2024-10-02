@@ -41,7 +41,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerTransactionSent = false;
     this._triggerNumberOfRunsReceived = false;
     this._triggerRefCodeFromDeeplinkExists = false;
-    this.__triggerUserNftsReceived = false;
+    this._triggerReadContractDataReceived = false;
     this._triggerError = false;
 
     // User data
@@ -51,7 +51,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._username = null; // string
     this._userId = null; // string
     this._personalDetails = {};
-    this._userNfts = [];
 
     // Referral data
     this._referralCode = null; // string
@@ -67,6 +66,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._numberOfRuns = 0;
 
     this._lastTransactionHash = null;
+    this._lastReadContractData = null;
 
     this._refCodeFromDeeplink = "";
 
@@ -77,8 +77,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._usersServiceApiUrl = properties[3];
       this._leaderboardApiUrl = properties[4];
       this._referralApiUrl = properties[5];
-      this._nftApiUrl = properties[6];
-      this._platformId = properties[7];
+      this._platformId = properties[6];
     }
   }
 
@@ -118,32 +117,20 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return null;
   }
 
-  GetFunctionSignature(functionAbi) {
-    return `${functionAbi.name}(${functionAbi.inputs
-      .map((el) => el.type)
-      .join(",")})`;
-  }
-
-  EncodeParameter(type, value) {
-    if (type === "address") {
-      // Remove '0x' and pad the address to 64 hex characters (32 bytes)
-      return value.toLowerCase().replace(/^0x/, "").padStart(64, "0");
-    } else if (type.startsWith("uint")) {
-      // Convert to BigInt and pad to 64 hex characters (32 bytes)
-      return BigInt(value).toString(16).padStart(64, "0");
-    } else if (type === "bytes") {
-      // Handle empty bytes (0x0 specifically)
-      if (value === "0x0" || value === "0x" || value === "") {
-        return "0".repeat(64); // Pad empty bytes to 32 bytes (64 hex characters)
-      }
-      // Remove '0x' and pad the value to a multiple of 32 bytes (64 hex characters)
-      return value.replace(/^0x/, "").padEnd(64, "0");
-    } else if (type === "bool") {
-      // Handle boolean values, where true is encoded as 1 and false as 0
-      return value ? "1".padStart(64, "0") : "0".padStart(64, "0");
-    } else {
-      throw new Error(`Unsupported type: ${type}`);
+  SerializeData(data) {
+    if (typeof data === "bigint") {
+      return data.toString(); // Convert BigInt to string
+    } else if (Array.isArray(data)) {
+      return data.map(this.SerializeData); // Recursively handle arrays
+    } else if (typeof data === "object" && data !== null) {
+      return Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          this.SerializeData(value),
+        ])
+      ); // Recursively handle objects
     }
+    return data; // Return other data types unchanged
   }
 
   // Actions
@@ -954,7 +941,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
       }
 
-      const functionSignature = this.GetFunctionSignature(functionAbi);
       const inputData = JSON.parse(
         input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
       );
@@ -964,43 +950,58 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         throw new Error("Mismatch in number of function arguments");
       }
 
-      if (!keccak256) {
-        throw new Error("keccak256 library is not loaded or unavailable.");
-      }
-
-      const keccak256Hash = keccak256(functionSignature).toString("hex");
-      const functionSelector = keccak256Hash.substring(0, 8);
-
-      let data = "0x" + functionSelector;
-
-      // Track dynamic data separately
-      let staticDataLength = 0;
-      // Loop through the inputs
-      functionAbi.inputs.forEach((input, index) => {
-        const value = inputData[index];
-
-        if (input.internalType === "bytes") {
-          // Handle dynamic type: bytes
-          const offset = (functionAbi.inputs.length + staticDataLength) * 32; // Offset for dynamic data
-          data += offset.toString(16).padStart(64, "0");
-        }
-        const encoded = this.EncodeParameter(input.internalType, value);
-        data += encoded;
-      });
-
-      const txParams = {
-        from: this._account,
-        to: contract_address,
-        data: data,
-      };
-
       await this.PostToDOMAsync("switch-chain", chain_id);
 
-      const txHash = await this.PostToDOMAsync("send-transaction", txParams);
+      const contract = new web3.eth.Contract(parsedAbi, contract_address);
+      const transaction = await contract.methods[function_name](
+        ...inputData
+      ).send({
+        from: this._account,
+      });
 
-      this._lastTransactionHash = txHash;
+      this._lastTransactionHash = transaction.transactionHash;
 
       this.OnTransactionSent();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to send transaction: " + error.message);
+    }
+  }
+
+  async _ReadContract(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    rpc_url
+  ) {
+    try {
+      const parsedAbi = JSON.parse(abi);
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const inputData = JSON.parse(
+        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+      );
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+      const web3Provider = new Web3.providers.HttpProvider(rpc_url);
+      const web3 = new Web3(web3Provider);
+      const contract = new web3.eth.Contract(parsedAbi, contract_address);
+      const readData = await contract.methods[function_name](
+        ...inputData
+      ).call();
+
+      this._lastReadContractData = this.SerializeData(readData);
+
+      this.OnReadContractDataReceived();
     } catch (error) {
       console.log(error);
       this.HandleError("Failed to send transaction: " + error.message);
@@ -1049,60 +1050,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._refCodeFromDeeplink = refCode;
 
       this.OnRefCodeFromDeeplinkExists();
-    }
-  }
-
-  async _RequestUserNfts(token_ids, contract_address) {
-    try {
-      const requestParams = new URLSearchParams({
-        limit: 99999,
-        "sort[token.creationBlock]": "desc",
-        showBlacklisted: true,
-      });
-
-      const tokenIds = JSON.parse(
-        token_ids.replace(/&quot;/g, '"').replace(/'/g, '"')
-      );
-
-      if (!tokenIds.length > 0 || !contract_address || !token_ids) {
-        throw new Error("No params provided!");
-      }
-
-      tokenIds.forEach((tokenId) => {
-        requestParams.append(`tokens[${contract_address}]`, tokenId.toString());
-      });
-
-      const nftResponse = await fetch(
-        `${this._nftApiUrl}/v1/user/${this._account}/tokens?${requestParams}`
-      );
-
-      if (!nftResponse.ok) {
-        const errorData = await nftResponse.json();
-        throw new Error(
-          errorData?.messages?.[0] ||
-            errorData?.message ||
-            "Something went wrong. Try again later!"
-        );
-      }
-
-      const response = await nftResponse.json();
-
-      this._userNfts = tokenIds.map((tokenId) => {
-        const isOwned = response.results.some(
-          (token) => token.token._tokenId === tokenId
-        );
-
-        return {
-          tokenId,
-          contractAddress: contract_address,
-          isOwned,
-        };
-      });
-
-      this.OnUserNftsReceived();
-    } catch (error) {
-      console.log(error);
-      this.HandleError("Failed to retrieve user nfts: " + error.message);
     }
   }
 
@@ -1197,9 +1144,9 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnRefCodeFromDeeplinkExists);
   }
 
-  OnUserNftsReceived() {
-    this.__triggerUserNftsReceived = true;
-    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnUserNftsReceived);
+  OnReadContractDataReceived() {
+    this._triggerReadContractDataReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReadContractDataReceived);
   }
 
   // Expressions
@@ -1263,12 +1210,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return this._refCodeFromDeeplink;
   }
 
-  _GetUserNfts() {
-    return this._userNfts;
-  }
-
   _GetLastTransactionHash() {
     return this._lastTransactionHash;
+  }
+
+  _GetLastReadContractData() {
+    return this._lastReadContractData;
   }
 
   _GetLastError() {

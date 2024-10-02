@@ -151,9 +151,9 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
-  OnUserNftsReceived() {
-    if (this.__triggerUserNftsReceived) {
-      this.__triggerUserNftsReceived = false;
+  OnReadContractDataReceived() {
+    if (this._triggerReadContractDataReceived) {
+      this._triggerReadContractDataReceived = false;
       return true;
     }
 

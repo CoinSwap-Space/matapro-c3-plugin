@@ -83,10 +83,10 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetRefCodeFromDeeplink() {
     return this._GetRefCodeFromDeeplink();
   },
-  GetUserNfts() {
-    const nfts = this._GetUserNfts();
-    const jsonNfts = JSON.stringify(nfts);
+  GetLastReadContractData() {
+    const data = this._GetLastReadContractData();
+    const jsonData = JSON.stringify(data);
 
-    return jsonNfts;
+    return jsonData;
   },
 };

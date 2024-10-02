@@ -77,7 +77,19 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   CheckReferralCodeFromDeeplink() {
     this._CheckReferralCodeFromDeeplink();
   },
-  async RequestUserNfts(token_ids, contract_address) {
-    await this._RequestUserNfts(token_ids, contract_address);
+  async ReadContract(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    rpc_url
+  ) {
+    await this._ReadContract(
+      contract_address,
+      abi,
+      function_name,
+      input_data,
+      rpc_url
+    );
   },
 };

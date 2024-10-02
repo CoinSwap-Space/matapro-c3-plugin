@@ -33,10 +33,26 @@
         console.log("keccak256 library loaded successfully!");
       };
 
+      // Add web3.js library
+      var web3ScriptEl = document.createElement("script");
+      web3ScriptEl.type = "text/javascript";
+      web3ScriptEl.src =
+        "https://cdn.jsdelivr.net/npm/web3@4.13.0/dist/web3.min.js";
+      document.getElementsByTagName("head")[0].appendChild(web3ScriptEl);
+
+      web3ScriptEl.onload = function () {
+        if (typeof window.ethereum !== "undefined") {
+          window.Web3 = Web3;
+          window.web3 = new Web3(window.ethereum);
+          console.log("web3.js library loaded successfully!");
+        } else {
+          console.log("web3.js library failed to load!");
+        }
+      };
+
       this.AddRuntimeMessageHandlers([
         ["eth-request-accounts", () => this._ETHRequestAccounts()],
         ["get-signature", (payload) => this._GetSignature(payload)],
-        ["send-transaction", (txParams) => this._SendTransaction(txParams)],
         ["switch-chain", (chainId) => this._SwitchChain(chainId)],
         [
           "get-referral-code-from-deeplink",
@@ -77,30 +93,6 @@
       }
 
       return signature;
-    }
-
-    async _SendTransaction(txParams) {
-      const provider = window.ethereum;
-      const gasPrice = await window.ethereum.request({
-        method: "eth_gasPrice",
-      });
-      const estimatedGas = await provider.request({
-        method: "eth_estimateGas",
-        params: [txParams],
-      });
-
-      const txHash = await provider.request({
-        method: "eth_sendTransaction",
-        params: [
-          {
-            ...txParams,
-            gas: estimatedGas.toString(16),
-            gasPrice: parseInt(gasPrice).toString(16),
-          },
-        ],
-      });
-
-      return txHash;
     }
 
     async _SwitchChain(chainId) {

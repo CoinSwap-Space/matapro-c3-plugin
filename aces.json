@@ -97,8 +97,8 @@
         "isTrigger": true
       },
       {
-        "id": "on-user-nfts-received",
-        "scriptName": "OnUserNftsReceived",
+        "id": "on-read-contract-data-received",
+        "scriptName": "OnReadContractDataReceived",
         "isTrigger": true
       }
     ],
@@ -241,12 +241,15 @@
         "params": []
       },
       {
-        "id": "request-user-nfts",
-        "scriptName": "RequestUserNfts",
+        "id": "read-contract",
+        "scriptName": "ReadContract",
         "isAsync": true,
         "params": [
-          { "id": "token-ids", "type": "string" },
-          { "id": "contract-address", "type": "string" }
+          { "id": "contract-address", "type": "string" },
+          { "id": "abi", "type": "string" },
+          { "id": "function-name", "type": "string" },
+          { "id": "input-data", "type": "string" },
+          { "id": "rpc-url", "type": "string" }
         ]
       }
     ],
@@ -444,9 +447,9 @@
         "params": []
       },
       {
-        "id": "get-user-nfts",
-        "expressionName": "GetUserNfts",
-        "scriptName": "GetUserNfts",
+        "id": "get-last-read-contract-data",
+        "expressionName": "GetLastReadContractData",
+        "scriptName": "GetLastReadContractData",
         "highlight": true,
         "returnType": "string",
         "params": []

@@ -144,10 +144,10 @@
             "display-text": "Triggered when the referral code from the deeplink exists.",
             "description": "Triggered when a referral code is successfully retrieved from the provided deeplink."
           },
-          "on-user-nfts-received": {
-            "list-name": "On User NFTs Received",
-            "display-text": "Triggered when the user's NFTs are received.",
-            "description": "Triggered when the NFTs owned by the user are successfully retrieved."
+          "on-read-contract-data-received": {
+            "list-name": "On Contract Data Received",
+            "display-text": "Triggered when the contract data is received.",
+            "description": "Triggered when data from the smart contract is successfully retrieved and read."
           }
         },
         "actions": {
@@ -363,18 +363,30 @@
             "display-text": "Check if a referral code exists in the provided deeplink.",
             "description": "Validates and checks if a referral code is present in a given deeplink."
           },
-          "request-user-nfts": {
-            "list-name": "Request User NFTs",
-            "display-text": "Request NFTs owned by the user with token IDs {0} and contract address {1}",
-            "description": "Requests data for NFTs owned by the user, filtered by specific token IDs and contract address.",
+          "read-contract": {
+            "list-name": "Read Contract Data",
+            "display-text": "Read data from the contract at address {0} using the ABI {1}, function {2}, with input data {3}, on chain ID {4}.",
+            "description": "Reads data from a smart contract at the specified address using the provided ABI, function name, input data, and target chain ID.",
             "params": {
-              "token-ids": {
-                "name": "Token IDs",
-                "desc": "A list of token IDs to filter the NFTs."
-              },
               "contract-address": {
                 "name": "Contract Address",
-                "desc": "The address of the smart contract to filter the NFTs."
+                "desc": "Address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-name": {
+                "name": "Function Name",
+                "desc": "The name of the function being called in the ABI, provided as a JSON stringified representation."
+              },
+              "input-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the input data required for the function call. Example format: \"{'_to':'123','_tokenId':1,'_amount':1}\"."
+              },
+              "rpc-url": {
+                "name": "RPC URL",
+                "desc": "The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain."
               }
             }
           }
@@ -500,9 +512,9 @@
             "translated-name": "Get Referral Code from Deeplink",
             "params": {}
           },
-          "get-user-nfts": {
-            "description": "Get the NFTs owned by the user.",
-            "translated-name": "Get User NFTs",
+          "get-last-read-contract-data": {
+            "description": "Get the data returned from the last read contract interaction.",
+            "translated-name": "Get Last Read Contract Data",
             "params": {}
           }
         }
