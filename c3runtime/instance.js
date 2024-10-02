@@ -992,7 +992,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         from: this._account,
         to: contract_address,
         data: data,
-        chainId: chain_id,
       };
 
       await this.PostToDOMAsync("switch-chain", chain_id);
