@@ -953,10 +953,16 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       await this.PostToDOMAsync("switch-chain", chain_id);
 
       const contract = new web3.eth.Contract(parsedAbi, contract_address);
+      const estimatedGas = await contract.methods[function_name](
+        ...inputData
+      ).estimateGas({
+        from: this._account,
+      });
       const transaction = await contract.methods[function_name](
         ...inputData
       ).send({
         from: this._account,
+        gas: estimatedGas,
       });
 
       this._lastTransactionHash = transaction.transactionHash;
