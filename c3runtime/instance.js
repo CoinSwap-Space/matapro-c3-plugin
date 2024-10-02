@@ -958,11 +958,13 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       ).estimateGas({
         from: this._account,
       });
+      const currentGasPrice = await web3.eth.getGasPrice();
       const transaction = await contract.methods[function_name](
         ...inputData
       ).send({
         from: this._account,
         gas: estimatedGas,
+        gasPrice: currentGasPrice,
       });
 
       this._lastTransactionHash = transaction.transactionHash;
