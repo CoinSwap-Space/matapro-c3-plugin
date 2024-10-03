@@ -319,7 +319,27 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._leaderboard = leaderboard;
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-total/count/leaderboard/${this._leaderboardId}`
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
+      this._leaderboard = { results: leaderboard, count };
 
       this.OnLeaderboardReceived();
     } catch (error) {
@@ -486,7 +506,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
       }
 
-      const { results } = await leaderboardResponse.json();
+      const { results, count } = await leaderboardResponse.json();
       let leaderboard = results;
 
       if (leaderboard.length > 0) {
@@ -537,7 +557,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._bestScoresLeaderboard = leaderboard;
+      this._bestScoresLeaderboard = { results: leaderboard, count };
 
       this.OnBestScoresLeaderboardReceived();
     } catch (error) {
@@ -666,7 +686,27 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._referralLeaderboard = leaderboard;
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-total/count/leaderboard/${ref_leaderboard_id}`
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
+      this._referralLeaderboard = { results: leaderboard, count };
 
       this.OnReferralLeaderboardReceived();
     } catch (error) {
@@ -1040,7 +1080,13 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
       }
 
-      const count = Number(await countResponse.text());
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
       this._numberOfRuns = count;
 
       this.OnNumberOfRunsReceived();
