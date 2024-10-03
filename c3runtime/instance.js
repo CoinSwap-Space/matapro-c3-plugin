@@ -268,6 +268,43 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       }
 
       let leaderboard = await leaderboardResponse.json();
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-total/personal/${this._leaderboardId}/${this._userId}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (typeof personalData === "object") {
+          console.log(personalData);
+          personal = {
+            userId: this._userId,
+            position: personalData.mainScore.position,
+            currentScore: personalData.mainScore.currentRoundData.score,
+            totalScore: personalData.mainScore.totalRoundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -339,7 +376,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         console.log(err);
       }
 
-      this._leaderboard = { results: leaderboard, count };
+      this._leaderboard = {
+        count,
+        results: leaderboard,
+        ...(!!personal && { personal }),
+      };
 
       this.OnLeaderboardReceived();
     } catch (error) {
@@ -508,6 +549,41 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       const { results, count } = await leaderboardResponse.json();
       let leaderboard = results;
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?leaderboardId=${this._leaderboardId}&map=${map_id}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (!!personalData[0]) {
+          personal = {
+            userId: this._userId,
+            position: personalData[0].position,
+            bestScore: personalData[0].roundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -557,7 +633,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._bestScoresLeaderboard = { results: leaderboard, count };
+      this._bestScoresLeaderboard = {
+        results: leaderboard,
+        count,
+        ...(!!personal && { personal }),
+      };
 
       this.OnBestScoresLeaderboardReceived();
     } catch (error) {
@@ -635,6 +715,42 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       }
 
       let leaderboard = await leaderboardResponse.json();
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-total/personal/${this._leaderboardId}/${this._userId}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (typeof personalData === "object") {
+          personal = {
+            userId: this._userId,
+            position: personalData.mainScore.position,
+            currentScore: personalData.mainScore.currentRoundData.score,
+            totalScore: personalData.mainScore.totalRoundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -706,7 +822,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         console.log(err);
       }
 
-      this._referralLeaderboard = { results: leaderboard, count };
+      this._referralLeaderboard = {
+        results: leaderboard,
+        count,
+        ...(!!personal && { personal }),
+      };
 
       this.OnReferralLeaderboardReceived();
     } catch (error) {
