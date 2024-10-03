@@ -16,7 +16,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._usersServiceApiUrl = "";
     this._leaderboardApiUrl = "";
     this._referralApiUrl = "";
-    this._nftApiUrl = "";
     this._platformId = "";
 
     // Error

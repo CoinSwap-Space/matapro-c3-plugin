@@ -36,10 +36,6 @@
             "name": "Referral API URL",
             "desc": "The URL of the Referral API used in the Metapro system."
           },
-          "nft-api-url": {
-            "name": "Nft API URL",
-            "desc": "The URL of the Nft API used in the Metapro system."
-          },
           "platform-id": {
             "name": "Platform ID",
             "desc": "The ID of platform."
