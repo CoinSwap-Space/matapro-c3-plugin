@@ -192,6 +192,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         wallet: this._account,
         signature,
         projectId: this._projectId,
+        platformId: this._platformId,
       };
 
       if (!(hasAccount && hasRulesChecked)) {
