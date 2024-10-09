@@ -36,6 +36,10 @@
             "name": "Referral API URL",
             "desc": "The URL of the Referral API used in the Metapro system."
           },
+          "nft-api-url": {
+            "name": "NFT API URL",
+            "desc": "The URL of the NFT API used in the Metapro system."
+          },
           "platform-id": {
             "name": "Platform ID",
             "desc": "The ID of platform."
@@ -144,6 +148,11 @@
             "list-name": "On Contract Data Received",
             "display-text": "Triggered when the contract data is received.",
             "description": "Triggered when data from the smart contract is successfully retrieved and read."
+          },
+          "on-user-nfts-received": {
+            "list-name": "On User NFTs Received",
+            "display-text": "Triggered when the user's NFTs are received.",
+            "description": "Triggered when the NFTs owned by the user are successfully retrieved."
           }
         },
         "actions": {
@@ -385,6 +394,17 @@
                 "desc": "The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain."
               }
             }
+          },
+          "request-user-nfts": {
+            "list-name": "Request User NFTs",
+            "display-text": "Request user NFTs with query {0}",
+            "description": "Retrieves the NFTs owned by a user based on a provided query as stringified JSON.",
+            "params": {
+              "query": {
+                "name": "Query",
+                "desc": "A stringified JSON representation of the query params. Example format: {'tokens': [{'contractAddress': '0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377', 'tokenId': 123}], 'sort': {'sortKey': 'token.creationBlock', 'sortDirection': 'desc'}}"
+              }
+            }
           }
         },
         "expressions": {
@@ -511,6 +531,16 @@
           "get-last-read-contract-data": {
             "description": "Get the data returned from the last read contract interaction.",
             "translated-name": "Get Last Read Contract Data",
+            "params": {}
+          },
+          "get-user-nfts": {
+            "description": "Get the NFTs owned by the user.",
+            "translated-name": "Get User NFTs",
+            "params": {}
+          },
+          "get-nft-api-url": {
+            "description": "Get the URL for accessing the NFT API.",
+            "translated-name": "Get NFT API URL",
             "params": {}
           }
         }

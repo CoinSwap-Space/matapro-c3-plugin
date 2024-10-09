@@ -100,6 +100,11 @@
         "id": "on-read-contract-data-received",
         "scriptName": "OnReadContractDataReceived",
         "isTrigger": true
+      },
+      {
+        "id": "on-user-nfts-received",
+        "scriptName": "OnUserNftsReceived",
+        "isTrigger": true
       }
     ],
     "actions": [
@@ -251,6 +256,12 @@
           { "id": "input-data", "type": "string" },
           { "id": "rpc-url", "type": "string" }
         ]
+      },
+      {
+        "id": "request-user-nfts",
+        "scriptName": "RequestUserNfts",
+        "isAsync": true,
+        "params": [{ "id": "query", "type": "string" }]
       }
     ],
     "expressions": [
@@ -450,6 +461,22 @@
         "id": "get-last-read-contract-data",
         "expressionName": "GetLastReadContractData",
         "scriptName": "GetLastReadContractData",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-user-nfts",
+        "expressionName": "GetUserNfts",
+        "scriptName": "GetUserNfts",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-nft-api-url",
+        "expressionName": "GetNftApiUrl",
+        "scriptName": "GetNftApiUrl",
         "highlight": true,
         "returnType": "string",
         "params": []

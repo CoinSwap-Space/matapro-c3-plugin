@@ -16,6 +16,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._usersServiceApiUrl = "";
     this._leaderboardApiUrl = "";
     this._referralApiUrl = "";
+    this._nftApiUrl = "";
     this._platformId = "";
 
     // Error
@@ -41,6 +42,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerNumberOfRunsReceived = false;
     this._triggerRefCodeFromDeeplinkExists = false;
     this._triggerReadContractDataReceived = false;
+    this._triggerUserNftsReceived = false;
     this._triggerError = false;
 
     // User data
@@ -50,6 +52,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._username = null; // string
     this._userId = null; // string
     this._personalDetails = {};
+
+    this._userNfts = {};
 
     // Referral data
     this._referralCode = null; // string
@@ -76,7 +80,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._usersServiceApiUrl = properties[3];
       this._leaderboardApiUrl = properties[4];
       this._referralApiUrl = properties[5];
-      this._platformId = properties[6];
+      this._nftApiUrl = properties[6];
+      this._platformId = properties[7];
     }
   }
 
@@ -130,6 +135,48 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       ); // Recursively handle objects
     }
     return data; // Return other data types unchanged
+  }
+
+  GetURLParams({ params, paramsToSkip = [] }) {
+    const requestParams = new URLSearchParams();
+
+    Object.keys(params)
+      .filter((param) => !paramsToSkip.includes(param))
+      .forEach((param) => {
+        const value = params[param];
+        if (param === "sort")
+          requestParams.append(
+            `sort[${value.sortKey}]`,
+            `${value.sortDirection}`
+          );
+        else if (param === "tokens" || param === "skipTokens")
+          value.forEach((token) => {
+            requestParams.append(
+              `${param}[${token.contractAddress}]`,
+              token.tokenId.toString()
+            );
+          });
+        else if (param === "collections")
+          value.forEach((collection) => {
+            requestParams.append(
+              `${param}[${collection.createdBy}]`,
+              collection.collectionName
+            );
+          });
+        else if (param === "properties") {
+          value.forEach((item) => {
+            if (item.name && isArrayPopulated(item.values)) {
+              item.values.forEach((v) => {
+                requestParams.append(`${param}[${item.name}]`, v.toString());
+              });
+            }
+          });
+        } else if (Array.isArray(value))
+          value.forEach((item) => requestParams.append(param, item.toString()));
+        else requestParams.append(param, value);
+      });
+
+    return requestParams;
   }
 
   // Actions
@@ -1227,6 +1274,44 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _RequestUserNfts(query) {
+    try {
+      let parsedQuery = {};
+
+      if (!!query) {
+        parsedQuery = JSON.parse(
+          query.replace(/&quot;/g, '"').replace(/'/g, '"')
+        );
+      }
+
+      const requestParams = this.GetURLParams({
+        params: parsedQuery,
+      });
+
+      const nftResponse = await fetch(
+        `${this._nftApiUrl}/v1/user/${this._account}/tokens?${requestParams}`
+      );
+
+      if (!nftResponse.ok) {
+        const errorData = await nftResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const nfts = await nftResponse.json();
+
+      this._userNfts = nfts;
+
+      this.OnUserNftsReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Requesting user nfts failed: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -1318,6 +1403,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnRefCodeFromDeeplinkExists);
   }
 
+  OnUserNftsReceived() {
+    this._triggerUserNftsReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnUserNftsReceived);
+  }
+
   OnReadContractDataReceived() {
     this._triggerReadContractDataReceived = true;
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReadContractDataReceived);
@@ -1392,6 +1482,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return this._lastReadContractData;
   }
 
+  _GetUserNfts() {
+    return this._userNfts;
+  }
+
   _GetLastError() {
     return this._errorMsg;
   }
@@ -1418,6 +1512,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetReferralApiUrl() {
     return this._referralApiUrl;
+  }
+
+  _GetNftApiUrl() {
+    return this._nftApiUrl;
   }
 
   _GetPlatformId() {

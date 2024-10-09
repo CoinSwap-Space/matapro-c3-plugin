@@ -11,7 +11,7 @@ const SDK = self.SDK;
 const PLUGIN_ID = "MetaproPlugin";
 ////////////////////////////////////////////
 
-const PLUGIN_VERSION = "3.7.0.0";
+const PLUGIN_VERSION = "3.8.0.0";
 const PLUGIN_CATEGORY = "platform-specific";
 
 const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
@@ -50,6 +50,7 @@ const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
       new SDK.PluginProperty("text", "users-service-api-url", ""),
       new SDK.PluginProperty("text", "leaderboard-api-url", ""),
       new SDK.PluginProperty("text", "referral-api-url", ""),
+      new SDK.PluginProperty("text", "nft-api-url", ""),
       new SDK.PluginProperty("text", "platform-id", ""),
     ]);
 

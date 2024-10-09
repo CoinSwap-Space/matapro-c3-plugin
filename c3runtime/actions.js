@@ -92,4 +92,7 @@ self.C3.Plugins.MetaproPlugin.Acts = {
       rpc_url
     );
   },
+  async RequestUserNfts(query) {
+    await this._RequestUserNfts(query);
+  },
 };

@@ -159,4 +159,12 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnUserNftsReceived() {
+    if (this._triggerUserNftsReceived) {
+      this._triggerUserNftsReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };
