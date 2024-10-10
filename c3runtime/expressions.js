@@ -89,6 +89,12 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonData;
   },
+  GetLastMultipleReadContractData() {
+    const data = this._GetLastMultipleReadContractData();
+    const jsonData = JSON.stringify(data);
+
+    return jsonData;
+  },
   GetUserNfts() {
     const data = this._GetUserNfts();
     const jsonData = JSON.stringify(data);

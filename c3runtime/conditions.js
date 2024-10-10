@@ -159,6 +159,14 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnMultipleReadContractDataReceived() {
+    if (this._triggerMultipleReadContractDataReceived) {
+      this._triggerMultipleReadContractDataReceived = false;
+      return true;
+    }
+
+    return false;
+  },
   OnUserNftsReceived() {
     if (this._triggerUserNftsReceived) {
       this._triggerUserNftsReceived = false;

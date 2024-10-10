@@ -95,4 +95,19 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestUserNfts(query) {
     await this._RequestUserNfts(query);
   },
+  async MultipleReadContract(
+    contract_address,
+    abi,
+    function_names,
+    inputs_data,
+    rpc_url
+  ) {
+    await this._MultipleReadContract(
+      contract_address,
+      abi,
+      function_names,
+      inputs_data,
+      rpc_url
+    );
+  },
 };

@@ -97,6 +97,11 @@
         "isTrigger": true
       },
       {
+        "id": "on-multiple-read-contract-data-received",
+        "scriptName": "OnMultipleReadContractDataReceived",
+        "isTrigger": true
+      },
+      {
         "id": "on-read-contract-data-received",
         "scriptName": "OnReadContractDataReceived",
         "isTrigger": true
@@ -254,6 +259,18 @@
           { "id": "abi", "type": "string" },
           { "id": "function-name", "type": "string" },
           { "id": "input-data", "type": "string" },
+          { "id": "rpc-url", "type": "string" }
+        ]
+      },
+      {
+        "id": "multiple-read-contract",
+        "scriptName": "MultipleReadContract",
+        "isAsync": true,
+        "params": [
+          { "id": "contract-address", "type": "string" },
+          { "id": "abi", "type": "string" },
+          { "id": "function-names", "type": "string" },
+          { "id": "inputs-data", "type": "string" },
           { "id": "rpc-url", "type": "string" }
         ]
       },
@@ -461,6 +478,14 @@
         "id": "get-last-read-contract-data",
         "expressionName": "GetLastReadContractData",
         "scriptName": "GetLastReadContractData",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-multiple-last-read-contract-data",
+        "expressionName": "GetLastMultipleReadContractData",
+        "scriptName": "GetLastMultipleReadContractData",
         "highlight": true,
         "returnType": "string",
         "params": []

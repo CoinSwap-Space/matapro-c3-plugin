@@ -149,6 +149,11 @@
             "display-text": "Triggered when the contract data is received.",
             "description": "Triggered when data from the smart contract is successfully retrieved and read."
           },
+          "on-multiple-read-contract-data-received": {
+            "list-name": "On Multiple Contract Data Received",
+            "display-text": "Triggered when multiple contract data are received.",
+            "description": "Triggered when data from multiple smart contract reads are successfully retrieved."
+          },
           "on-user-nfts-received": {
             "list-name": "On User NFTs Received",
             "display-text": "Triggered when the user's NFTs are received.",
@@ -395,6 +400,33 @@
               }
             }
           },
+          "multiple-read-contract": {
+            "list-name": "Read Multiple Contract Data",
+            "display-text": "Read data from the contract at address {0} using the ABI {1}, functions {2}, with input data {3}, on RPC URL {4}.",
+            "description": "Reads data from a smart contract at the specified address using the provided ABI, multiple function names, input data, and RPC URL.",
+            "params": {
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "The address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-names": {
+                "name": "Function Names",
+                "desc": "A JSON stringified representation of the array of function names to be called in the ABI."
+              },
+              "inputs-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the array of input data for each function call. Example format: \"[{'_to':'123','_tokenId':1,'_amount':1}, {'_to':'456','_tokenId':2}]\"."
+              },
+              "rpc-url": {
+                "name": "RPC URL",
+                "desc": "The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain."
+              }
+            }
+          },
           "request-user-nfts": {
             "list-name": "Request User NFTs",
             "display-text": "Request user NFTs with query {0}",
@@ -531,6 +563,11 @@
           "get-last-read-contract-data": {
             "description": "Get the data returned from the last read contract interaction.",
             "translated-name": "Get Last Read Contract Data",
+            "params": {}
+          },
+          "get-multiple-last-read-contract-data": {
+            "description": "Get the data returned from multiple contract read interactions.",
+            "translated-name": "Get Multiple Last Read Contract Data",
             "params": {}
           },
           "get-user-nfts": {

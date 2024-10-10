@@ -42,6 +42,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerNumberOfRunsReceived = false;
     this._triggerRefCodeFromDeeplinkExists = false;
     this._triggerReadContractDataReceived = false;
+    this._triggerMultipleReadContractDataReceived = false;
     this._triggerUserNftsReceived = false;
     this._triggerError = false;
 
@@ -70,6 +71,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
     this._lastTransactionHash = null;
     this._lastReadContractData = null;
+    this._lastMultipleReadContractData = null;
 
     this._refCodeFromDeeplink = "";
 
@@ -1223,6 +1225,57 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _MultipleReadContract(
+    contract_address,
+    abi,
+    function_names,
+    inputs_data,
+    rpc_url
+  ) {
+    const parsedAbi = JSON.parse(abi);
+    const functionsArray = JSON.parse(
+      function_names.replace(/&quot;/g, '"').replace(/'/g, '"')
+    );
+    const inputsArray = JSON.parse(
+      inputs_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+    );
+    const web3Provider = new Web3.providers.HttpProvider(rpc_url);
+    const web3 = new Web3(web3Provider);
+    const contract = new web3.eth.Contract(parsedAbi, contract_address);
+
+    const promises = functionsArray.map(async (function_name, index) => {
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const input_data = inputsArray[index];
+      const inputData = JSON.parse(
+        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+      );
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+
+      // Call the contract function and return the result
+      return contract.methods[function_name](...inputData).call();
+    });
+    try {
+      const data = await Promise.all(promises);
+
+      this._lastMultipleReadContractData = this.SerializeData(data);
+
+      this.OnReadContractDataReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to send transaction: " + error.message);
+    }
+  }
+
   async _RequestNumberOfRuns(map_id) {
     try {
       const params = new URLSearchParams({
@@ -1413,6 +1466,13 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReadContractDataReceived);
   }
 
+  OnMultipleReadContractDataReceived() {
+    this._triggerMultipleReadContractDataReceived = true;
+    this.Trigger(
+      C3.Plugins.MetaproPlugin.Cnds.OnMultipleReadContractDataReceived
+    );
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -1480,6 +1540,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetLastReadContractData() {
     return this._lastReadContractData;
+  }
+
+  _GetLastMultipleReadContractData() {
+    return this._lastMultipleReadContractData;
   }
 
   _GetUserNfts() {
