@@ -125,7 +125,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   SerializeData(data) {
     if (typeof data === "bigint") {
-      return data.toString(); // Convert BigInt to string
+      return Number(data); // Convert BigInt to number
     } else if (Array.isArray(data)) {
       return data.map(this.SerializeData); // Recursively handle arrays
     } else if (typeof data === "object" && data !== null) {
@@ -1251,10 +1251,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
       }
 
-      const input_data = inputsArray[index];
-      const inputData = JSON.parse(
-        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
-      );
+      const inputData = inputsArray[index];
 
       const missingKeys = functionAbi.inputs.length !== inputData.length;
       if (missingKeys) {
@@ -1269,7 +1266,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this._lastMultipleReadContractData = this.SerializeData(data);
 
-      this.OnReadContractDataReceived();
+      this.OnMultipleReadContractDataReceived();
     } catch (error) {
       console.log(error);
       this.HandleError("Failed to send transaction: " + error.message);
