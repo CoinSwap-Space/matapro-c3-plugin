@@ -104,4 +104,7 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetNftApiUrl() {
     return this._GetNftApiUrl();
   },
+  GetTransactionStatus() {
+    return this._GetTransactionStatus();
+  },
 };

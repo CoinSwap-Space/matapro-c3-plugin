@@ -279,6 +279,11 @@
         "scriptName": "RequestUserNfts",
         "isAsync": true,
         "params": [{ "id": "query", "type": "string" }]
+      },
+      {
+        "id": "set-transaction-status",
+        "scriptName": "SetTransactionStatus",
+        "params": [{ "id": "status", "type": "string" }]
       }
     ],
     "expressions": [
@@ -502,6 +507,14 @@
         "id": "get-nft-api-url",
         "expressionName": "GetNftApiUrl",
         "scriptName": "GetNftApiUrl",
+        "highlight": true,
+        "returnType": "string",
+        "params": []
+      },
+      {
+        "id": "get-transaction-status",
+        "expressionName": "GetTransactionStatus",
+        "scriptName": "GetTransactionStatus",
         "highlight": true,
         "returnType": "string",
         "params": []

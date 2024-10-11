@@ -110,4 +110,7 @@ self.C3.Plugins.MetaproPlugin.Acts = {
       rpc_url
     );
   },
+  SetTransactionStatus(status) {
+    this._SetTransactionStatus(status);
+  },
 };

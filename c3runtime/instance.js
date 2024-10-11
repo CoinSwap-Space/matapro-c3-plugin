@@ -1,4 +1,3 @@
-let stripe = null;
 const C3 = self.C3;
 
 const DOM_COMPONENT_ID = "MetaproPlugin";
@@ -69,7 +68,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._referralLeaderboard = [];
     this._numberOfRuns = 0;
 
+    // Send transaction
     this._lastTransactionHash = null;
+    this._transactionStatus = "initial";
+
+    // Read data
     this._lastReadContractData = null;
     this._lastMultipleReadContractData = null;
 
@@ -1159,6 +1162,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         throw new Error("Mismatch in number of function arguments");
       }
 
+      this._transactionStatus = "pending";
+
       await this.PostToDOMAsync("switch-chain", chain_id);
 
       const contract = new web3.eth.Contract(parsedAbi, contract_address);
@@ -1168,6 +1173,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         from: this._account,
       });
       const currentGasPrice = await web3.eth.getGasPrice();
+
       const transaction = await contract.methods[function_name](
         ...inputData
       ).send({
@@ -1178,11 +1184,44 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this._lastTransactionHash = transaction.transactionHash;
 
+      // Wait for transaction confirmation
+      const timeout = 120000; // 120sec
+      const startTime = Date.now();
+      let receipt = null;
+
+      while (receipt === null) {
+        receipt = await web3.eth.getTransactionReceipt(
+          transaction.transactionHash
+        );
+
+        if (receipt === null) {
+          const elapsedTime = Date.now() - startTime;
+
+          if (elapsedTime > timeout) {
+            throw new Error("Transaction confirmation timed out.");
+          }
+
+          // Wait for a short time before polling again to avoid spamming the node
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+      }
+
+      if (!!receipt && this.SerializeData(receipt.status)) {
+        this._transactionStatus = "success";
+      } else {
+        throw new Error("Transaction failed or was reverted.");
+      }
+
       this.OnTransactionSent();
     } catch (error) {
       console.log(error);
-      this.HandleError("Failed to send transaction: " + error.message);
+      this._transactionStatus = "error";
+      this.HandleError(error.message);
     }
+  }
+
+  _SetTransactionStatus(status) {
+    this._transactionStatus = status;
   }
 
   async _ReadContract(
@@ -1533,6 +1572,10 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
   _GetLastTransactionHash() {
     return this._lastTransactionHash;
+  }
+
+  _GetTransactionStatus() {
+    return this._transactionStatus;
   }
 
   _GetLastReadContractData() {

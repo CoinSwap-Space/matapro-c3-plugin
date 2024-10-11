@@ -437,6 +437,17 @@
                 "desc": "A stringified JSON representation of the query params. Example format: {'tokens': [{'contractAddress': '0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377', 'tokenId': 123}], 'sort': {'sortKey': 'token.creationBlock', 'sortDirection': 'desc'}}"
               }
             }
+          },
+          "set-transaction-status": {
+            "list-name": "Set Transaction Status",
+            "display-text": "Set the transaction status to {0}.",
+            "description": "Sets the internal transaction status variable to the provided status value, allowing you to track the current state of a transaction.",
+            "params": {
+              "status": {
+                "name": "Status",
+                "desc": "The status value to set for the internal transaction status variable."
+              }
+            }
           }
         },
         "expressions": {
@@ -578,6 +589,11 @@
           "get-nft-api-url": {
             "description": "Get the URL for accessing the NFT API.",
             "translated-name": "Get NFT API URL",
+            "params": {}
+          },
+          "get-transaction-status": {
+            "description": "Retrieves the current transaction status from the internal status variable.",
+            "translated-name": "Get Transaction Status",
             "params": {}
           }
         }
