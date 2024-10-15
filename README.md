@@ -48,7 +48,7 @@ The Metapro Plugin can be added through either the Construct store or as a dev a
 
 ## Downloads
 
-The Metapro Plugin addon is available for download along with project examples. (TODO: Add the download links)
+The Metapro Plugin addons are available in builds directory.
 
 ### Properties
 
