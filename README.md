@@ -1,5 +1,23 @@
 # Metapro Plugin for Construct 3
 
+Metapro is a powerful plugin for Construct 3 that enables developers to integrate blockchain functionality, user management, and leaderboard systems into their games and applications.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Properties](#properties)
+- [Supported API Calls](#supported-api-calls)
+  - [Actions](#actions)
+  - [Conditions](#conditions)
+  - [Expressions](#expressions)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Author](#author)
+- [License](#license)
+
 ## Features
 
 - **Account Management**:
@@ -44,24 +62,37 @@
 
 ## Installation
 
-The Metapro Plugin can be added through either the Construct store or as a dev addon in the editor.
+The Metapro Plugin can be added to your Construct 3 project in two ways:
 
-## Downloads
+1. Through the Construct store:
+   - Open Construct 3
+   - Go to Menu -> View -> Addons
+   - Search for "Metapro"
+   - Click "Add" to install the plugin
 
-The Metapro Plugin addons are available in builds directory.
+2. As a dev addon in the editor:
+   - Download the Metapro Plugin addon from the `builds` directory in this repository
+   - In Construct 3, go to Menu -> View -> Addons
+   - Click "Install new addon" and select the downloaded file
 
-### Properties
+## Getting Started
 
-| **Property Name**           | **Description**                                                |
-| --------------------------- | -------------------------------------------------------------- |
-| **Users Service API URL**   | The URL of the Users Service API used by the Metapro system.   |
-| **Project ID**              | The unique identifier for your project in Metapro.             |
-| **Leaderboard ID**          | The ID of the leaderboard used in the Metapro system.          |
-| **Referral Leaderboard ID** | The ID of the referral leaderboard used in the Metapro system. |
-| **Leaderboard API Key**     | The API key required to access the leaderboard.                |
-| **Leaderboard API URL**     | The URL of the Leaderboard API used in the Metapro system.     |
-| **Referral API URL**        | The URL of the Referral API used in the Metapro system.        |
-| **Platform ID**             | The ID of the platform associated with the project.            |
+1. After installation, add the Metapro object to your project layout.
+2. Configure the plugin properties (see [Properties](#properties) section).
+3. Use the provided actions, conditions, and expressions in your event sheets to interact with Metapro functionality.
+
+## Properties
+
+| Property Name | Description |
+|---------------|-------------|
+| Users Service API URL | The URL of the Users Service API used by the Metapro system. |
+| Project ID | The unique identifier for your project in Metapro. |
+| Leaderboard ID | The ID of the leaderboard used in the Metapro system. |
+| Referral Leaderboard ID | The ID of the referral leaderboard used in the Metapro system. |
+| Leaderboard API Key | The API key required to access the leaderboard. |
+| Leaderboard API URL | The URL of the Leaderboard API used in the Metapro system. |
+| Referral API URL | The URL of the Referral API used in the Metapro system. |
+| Platform ID | The ID of the platform associated with the project. |
 
 ## Supported API Calls
 
@@ -83,7 +114,7 @@ The Metapro Plugin addons are available in builds directory.
 | **Fetch Referral Code**             | Fetch an existing referral code for the user.                                                                                       | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Generate Referral Code**          | Generates a new referral code for the user if they do not already have one.                                                         | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Request Referral Structure**      | Retrieve the user's referral downline structure, including referral levels, total scores, user count, and percentages.              | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **Request Referral Leaderboard**    | Request the referral leaderboard for the user.                                                                                      | **Referral Leaderboard ID**: The ID of the referral leaderboard.<br>**Referral Leaderboard API Key**: The API key for accessing the referral leaderboard.<br>**Limit**: The maximum number of leaderboard entries to retrieve (default 20).<br>**Min Balance**: Minimum balance to display.<br>**Max Balance**: Maximum balance to display.                                                                                                                                                 |
+| **Request Referral Leaderboard**    | Request the referral leaderboard for the user.                                                                                      | **Referral Leaderboard ID**: The ID of the referral leaderboard.<br>**Referral Leaderboard API Key**: The API key for accessing the referral leaderboard.<br>**Limit**: The maximum number of leaderboard entries to retrieve (default 20).<br>**Min Balance**: Minimum balance to display.<br>**Max Balance**: Maximum balance to display.                                                                                                                                 |
 | **Send Contract Transaction**       | Send a transaction to interact with a smart contract based on the provided ABI, input data, and chain ID.                           | **Contract Address**: The address of the smart contract.<br>**ABI**: A JSON stringified representation of the ABI (Application Binary Interface).<br>**Function Name**: The name of the function being called in the ABI, provided as a JSON stringified representation.<br>**Input Data**: A JSON stringified representation of the input data required for the function call. Example format: `{'_to':'123','_tokenId':1,'_amount':1}`.<br>**Chain ID**: The target chain ID in decimals. |
 | **Request Number of Runs**          | Request the total number of runs for the user, with an optional map ID.                                                             | **Map ID** (optional): The unique identifier of the map (number).                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Read Contract Data**              | Read data from a smart contract at a specified address.                                                                             | **Contract Address**: The address of the smart contract.<br>**ABI**: A JSON stringified representation of the ABI (Application Binary Interface).<br>**Function Name**: The name of the function being called in the ABI.<br>**Input Data**: A JSON stringified representation of the input data required for the function call.<br>**RPC URL**: The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain.                                                   |
@@ -148,6 +179,35 @@ The Metapro Plugin addons are available in builds directory.
 | **Get User NFTs**                   | Retrieve the NFTs owned by the user.                                                                      |
 | **Get NFT API URL**                 | Retrieve the URL for accessing the NFT API.                                                               |
 | **Get Transaction Status**          | Retrieves the current transaction status from the internal status variable.                               |
+
+## Usage
+
+Here's a simple example of how to use the Metapro plugin to request a user's account:
+
+1. Add the Metapro object to your layout.
+2. In your event sheet, add a new event.
+3. For the event's condition, you might use a button click or a system start.
+4. Add an action to this event: Metapro -> Request Account.
+5. Add another event with the condition: Metapro -> On Account Received.
+6. In this event, you can add actions to use the received account, such as displaying it or using it for further authentication.
+
+## Troubleshooting
+
+- If you encounter issues with API calls, ensure that all required properties are correctly set in the Metapro object.
+- Check the browser console for any error messages related to Metapro.
+- Use the "Get Last Error" expression to retrieve detailed error information when an operation fails.
+
+## Contributing
+
+We welcome contributions to improve the Metapro plugin! If you'd like to contribute:
+
+1. Fork the repository
+2. Create a new branch for your feature or bug fix
+3. Make your changes and commit them with clear, descriptive messages
+4. Push your changes to your fork
+5. Submit a pull request with a description of your changes
+
+Please ensure your code adheres to the existing style and includes appropriate tests.
 
 ## Author
 
