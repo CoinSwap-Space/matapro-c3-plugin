@@ -3,7 +3,7 @@
   "type": "plugin",
   "name": "Metapro Plugin",
   "id": "MetaproPlugin",
-  "version": "3.11.0.0",
+  "version": "1.0.0.0",
   "author": "metapro",
   "website": "https://metapro.one/",
   "documentation": "https://metapro.one/",
