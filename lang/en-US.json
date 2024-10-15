@@ -34,11 +34,15 @@
           },
           "referral-api-url": {
             "name": "Referral API URL",
-            "desc": "The URL of the referral API used in the Metapro system."
+            "desc": "The URL of the Referral API used in the Metapro system."
           },
-          "map-id": {
-            "name": "Map ID",
-            "desc": "The ID of generated map."
+          "nft-api-url": {
+            "name": "NFT API URL",
+            "desc": "The URL of the NFT API used in the Metapro system."
+          },
+          "platform-id": {
+            "name": "Platform ID",
+            "desc": "The ID of platform."
           }
         },
         "aceCategories": {
@@ -124,6 +128,36 @@
             "list-name": "On Referral Leaderboard Received",
             "display-text": "Triggered when the referral leaderboard is received.",
             "description": "Triggered when the referral leaderboard data is successfully retrieved."
+          },
+          "on-transaction-sent": {
+            "list-name": "On Transaction Sent",
+            "display-text": "Triggered when a transaction is sent.",
+            "description": "Triggered when a transaction is successfully sent and the transaction hash is received."
+          },
+          "on-number-of-runs-received": {
+            "list-name": "On Number of Runs Received",
+            "display-text": "Triggered when the number of runs is received.",
+            "description": "Triggered when the total number of runs for the user is successfully retrieved."
+          },
+          "on-ref-code-from-deeplink-exists": {
+            "list-name": "On Referral Code from Deeplink Exists",
+            "display-text": "Triggered when the referral code from the deeplink exists.",
+            "description": "Triggered when a referral code is successfully retrieved from the provided deeplink."
+          },
+          "on-read-contract-data-received": {
+            "list-name": "On Contract Data Received",
+            "display-text": "Triggered when the contract data is received.",
+            "description": "Triggered when data from the smart contract is successfully retrieved and read."
+          },
+          "on-multiple-read-contract-data-received": {
+            "list-name": "On Multiple Contract Data Received",
+            "display-text": "Triggered when multiple contract data are received.",
+            "description": "Triggered when data from multiple smart contract reads are successfully retrieved."
+          },
+          "on-user-nfts-received": {
+            "list-name": "On User NFTs Received",
+            "display-text": "Triggered when the user's NFTs are received.",
+            "description": "Triggered when the NFTs owned by the user are successfully retrieved."
           }
         },
         "actions": {
@@ -230,25 +264,39 @@
           },
           "add-score": {
             "list-name": "Add score",
-            "display-text": "Add score {0}",
+            "display-text": "Add score {0} for map ID {1}",
             "description": "Add a new entry score for user.",
             "params": {
               "score": {
                 "name": "Score",
                 "desc": "The score earned by the user."
+              },
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
               }
             }
           },
           "request-best-score": {
             "list-name": "Request Best Score",
-            "display-text": "Request the best score for the user.",
-            "description": "Retrieves the highest score achieved by the user."
+            "display-text": "Request the best score for the user for map {0}.",
+            "description": "Retrieves the highest score achieved by the user.",
+            "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
+              }
+            }
           },
           "request-best-scores-leaderboard-by-map-id": {
             "list-name": "Request Best Scores Leaderboard",
-            "display-text": "Request the best scores leaderboard with limit {0}",
+            "display-text": "Request the best scores leaderboard for map {0} with limit {1}",
             "description": "Requests the leaderboard data showing the best scores for a specific map, with an optional limit.",
             "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The ID of the map."
+              },
               "limit": {
                 "name": "Limit",
                 "desc": "The maximum number of leaderboard entries to retrieve."
@@ -281,14 +329,128 @@
                 "desc": "Maximum balance to display."
               }
             }
+          },
+          "send-contract-transaction": {
+            "list-name": "Send contract transaction",
+            "display-text": "Send a transaction to the contract at address {0} using the ABI {1}, function {2}, with input data {3}, on chain ID {4}.",
+            "description": "Sends a transaction to interact with a smart contract at the specified address using the provided ABI, function name, input data, and target chain ID.",
+            "params": {
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "Address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-name": {
+                "name": "Function Name",
+                "desc": "The name of the function being called in the ABI, provided as a JSON stringified representation."
+              },
+              "input-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the input data required for the function call. Example format: \"{'_to':'123','_tokenId':1,'_amount':1}\"."
+              },
+              "chain-id": {
+                "name": "Chain ID",
+                "desc": "The target chain ID in decimals."
+              }
+            }
+          },
+          "request-number-of-runs": {
+            "list-name": "Request Number of Runs",
+            "display-text": "Request the number of runs for map {0}",
+            "description": "Retrieve the number of runs or attempts made for a specific map.",
+            "params": {
+              "map-id": {
+                "name": "Map ID",
+                "desc": "The unique identifier of the map (optional)."
+              }
+            }
+          },
+          "check-referral-code-from-deeplink": {
+            "list-name": "Check Referral Code from Deeplink",
+            "display-text": "Check if a referral code exists in the provided deeplink.",
+            "description": "Validates and checks if a referral code is present in a given deeplink."
+          },
+          "read-contract": {
+            "list-name": "Read Contract Data",
+            "display-text": "Read data from the contract at address {0} using the ABI {1}, function {2}, with input data {3}, on chain ID {4}.",
+            "description": "Reads data from a smart contract at the specified address using the provided ABI, function name, input data, and target chain ID.",
+            "params": {
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "Address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-name": {
+                "name": "Function Name",
+                "desc": "The name of the function being called in the ABI, provided as a JSON stringified representation."
+              },
+              "input-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the input data required for the function call. Example format: \"{'_to':'123','_tokenId':1,'_amount':1}\"."
+              },
+              "rpc-url": {
+                "name": "RPC URL",
+                "desc": "The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain."
+              }
+            }
+          },
+          "multiple-read-contract": {
+            "list-name": "Read Multiple Contract Data",
+            "display-text": "Read data from the contract at address {0} using the ABI {1}, functions {2}, with input data {3}, on RPC URL {4}.",
+            "description": "Reads data from a smart contract at the specified address using the provided ABI, multiple function names, input data, and RPC URL.",
+            "params": {
+              "contract-address": {
+                "name": "Contract Address",
+                "desc": "The address of the smart contract."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "A JSON stringified representation of the ABI (Application Binary Interface)."
+              },
+              "function-names": {
+                "name": "Function Names",
+                "desc": "A JSON stringified representation of the array of function names to be called in the ABI."
+              },
+              "inputs-data": {
+                "name": "Input Data",
+                "desc": "A JSON stringified representation of the array of input data for each function call. Example format: \"[{'_to':'123','_tokenId':1,'_amount':1}, {'_to':'456','_tokenId':2}]\"."
+              },
+              "rpc-url": {
+                "name": "RPC URL",
+                "desc": "The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain."
+              }
+            }
+          },
+          "request-user-nfts": {
+            "list-name": "Request User NFTs",
+            "display-text": "Request user NFTs with query {0}",
+            "description": "Retrieves the NFTs owned by a user based on a provided query as stringified JSON.",
+            "params": {
+              "query": {
+                "name": "Query",
+                "desc": "A stringified JSON representation of the query params. Example format: {'tokens': [{'contractAddress': '0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377', 'tokenId': 123}], 'sort': {'sortKey': 'token.creationBlock', 'sortDirection': 'desc'}}"
+              }
+            }
+          },
+          "set-transaction-status": {
+            "list-name": "Set Transaction Status",
+            "display-text": "Set the transaction status to {0}.",
+            "description": "Sets the internal transaction status variable to the provided status value, allowing you to track the current state of a transaction.",
+            "params": {
+              "status": {
+                "name": "Status",
+                "desc": "The status value to set for the internal transaction status variable."
+              }
+            }
           }
         },
         "expressions": {
-          "get-last-error": {
-            "description": "Get the most recent error message encountered by the plugin.",
-            "translated-name": "Get Last Error",
-            "params": {}
-          },
           "get-account": {
             "description": "Get the current user's Ethereum account.",
             "translated-name": "Get Account",
@@ -354,6 +516,21 @@
             "translated-name": "Get Referral Leaderboard",
             "params": {}
           },
+          "get-last-transaction-hash": {
+            "description": "Get the hash of the most recent transaction sent by the plugin.",
+            "translated-name": "Get Last Transaction Hash",
+            "params": {}
+          },
+          "get-number-of-runs": {
+            "description": "Get the total number of runs for the user.",
+            "translated-name": "Get Number of Runs",
+            "params": {}
+          },
+          "get-last-error": {
+            "description": "Get the most recent error message encountered by the plugin.",
+            "translated-name": "Get Last Error",
+            "params": {}
+          },
           "get-project-id": {
             "description": "Get the project ID associated with the current session.",
             "translated-name": "Get Project ID",
@@ -384,9 +561,39 @@
             "translated-name": "Get Referral API URL",
             "params": {}
           },
-          "get-map-id": {
-            "description": "Get the map ID for the current project.",
-            "translated-name": "Get Map ID",
+          "get-platform-id": {
+            "description": "Get the platform ID for the current project.",
+            "translated-name": "Get Platform ID",
+            "params": {}
+          },
+          "get-ref-code-from-deeplink": {
+            "description": "Get the referral code from the provided deeplink.",
+            "translated-name": "Get Referral Code from Deeplink",
+            "params": {}
+          },
+          "get-last-read-contract-data": {
+            "description": "Get the data returned from the last read contract interaction.",
+            "translated-name": "Get Last Read Contract Data",
+            "params": {}
+          },
+          "get-multiple-last-read-contract-data": {
+            "description": "Get the data returned from multiple contract read interactions.",
+            "translated-name": "Get Multiple Last Read Contract Data",
+            "params": {}
+          },
+          "get-user-nfts": {
+            "description": "Get the NFTs owned by the user.",
+            "translated-name": "Get User NFTs",
+            "params": {}
+          },
+          "get-nft-api-url": {
+            "description": "Get the URL for accessing the NFT API.",
+            "translated-name": "Get NFT API URL",
+            "params": {}
+          },
+          "get-transaction-status": {
+            "description": "Retrieves the current transaction status from the internal status variable.",
+            "translated-name": "Get Transaction Status",
             "params": {}
           }
         }

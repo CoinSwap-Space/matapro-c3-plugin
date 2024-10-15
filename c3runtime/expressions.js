@@ -1,7 +1,4 @@
 self.C3.Plugins.MetaproPlugin.Exps = {
-  GetLastError() {
-    return this._GetLastError();
-  },
   GetAccount() {
     return this._GetAccount();
   },
@@ -53,6 +50,15 @@ self.C3.Plugins.MetaproPlugin.Exps = {
 
     return jsonLeaderboard;
   },
+  GetNumberOfRuns() {
+    return this._GetNumberOfRuns();
+  },
+  GetLastTransactionHash() {
+    return this._GetLastTransactionHash();
+  },
+  GetLastError() {
+    return this._GetLastError();
+  },
   GetProjectId() {
     return this._GetProjectId();
   },
@@ -71,7 +77,34 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetReferralApiUrl() {
     return this._GetReferralApiUrl();
   },
-  GetMapId() {
-    return this._GetMapId();
+  GetPlatformId() {
+    return this._GetPlatformId();
+  },
+  GetRefCodeFromDeeplink() {
+    return this._GetRefCodeFromDeeplink();
+  },
+  GetLastReadContractData() {
+    const data = this._GetLastReadContractData();
+    const jsonData = JSON.stringify(data);
+
+    return jsonData;
+  },
+  GetLastMultipleReadContractData() {
+    const data = this._GetLastMultipleReadContractData();
+    const jsonData = JSON.stringify(data);
+
+    return jsonData;
+  },
+  GetUserNfts() {
+    const data = this._GetUserNfts();
+    const jsonData = JSON.stringify(data);
+
+    return jsonData;
+  },
+  GetNftApiUrl() {
+    return this._GetNftApiUrl();
+  },
+  GetTransactionStatus() {
+    return this._GetTransactionStatus();
   },
 };

@@ -127,4 +127,52 @@ self.C3.Plugins.MetaproPlugin.Cnds = {
 
     return false;
   },
+  OnTransactionSent() {
+    if (this._triggerTransactionSent) {
+      this._triggerTransactionSent = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnNumberOfRunsReceived() {
+    if (this._triggerNumberOfRunsReceived) {
+      this._triggerNumberOfRunsReceived = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnRefCodeFromDeeplinkExists() {
+    if (this._triggerRefCodeFromDeeplinkExists) {
+      this._triggerRefCodeFromDeeplinkExists = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnReadContractDataReceived() {
+    if (this._triggerReadContractDataReceived) {
+      this._triggerReadContractDataReceived = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnMultipleReadContractDataReceived() {
+    if (this._triggerMultipleReadContractDataReceived) {
+      this._triggerMultipleReadContractDataReceived = false;
+      return true;
+    }
+
+    return false;
+  },
+  OnUserNftsReceived() {
+    if (this._triggerUserNftsReceived) {
+      this._triggerUserNftsReceived = false;
+      return true;
+    }
+
+    return false;
+  },
 };

@@ -1,4 +1,3 @@
-let stripe = null;
 const C3 = self.C3;
 
 const DOM_COMPONENT_ID = "MetaproPlugin";
@@ -16,7 +15,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._usersServiceApiUrl = "";
     this._leaderboardApiUrl = "";
     this._referralApiUrl = "";
-    this._mapId = 0;
+    this._nftApiUrl = "";
+    this._platformId = "";
 
     // Error
     this._errorMsg = "";
@@ -37,6 +37,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._triggerBestScoreReceived = false;
     this._triggerBestScoresLeaderboardReceived = false;
     this._triggerReferralLeaderboardReceived = false;
+    this._triggerTransactionSent = false;
+    this._triggerNumberOfRunsReceived = false;
+    this._triggerRefCodeFromDeeplinkExists = false;
+    this._triggerReadContractDataReceived = false;
+    this._triggerMultipleReadContractDataReceived = false;
+    this._triggerUserNftsReceived = false;
     this._triggerError = false;
 
     // User data
@@ -46,6 +52,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._username = null; // string
     this._userId = null; // string
     this._personalDetails = {};
+
+    this._userNfts = {};
 
     // Referral data
     this._referralCode = null; // string
@@ -58,6 +66,17 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._currentScore = 0;
     this._totalScore = 0;
     this._referralLeaderboard = [];
+    this._numberOfRuns = 0;
+
+    // Send transaction
+    this._lastTransactionHash = null;
+    this._transactionStatus = "initial";
+
+    // Read data
+    this._lastReadContractData = null;
+    this._lastMultipleReadContractData = null;
+
+    this._refCodeFromDeeplink = "";
 
     if (properties) {
       this._projectId = properties[0];
@@ -66,7 +85,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this._usersServiceApiUrl = properties[3];
       this._leaderboardApiUrl = properties[4];
       this._referralApiUrl = properties[5];
-      this._mapId = properties[6];
+      this._nftApiUrl = properties[6];
+      this._platformId = properties[7];
     }
   }
 
@@ -96,6 +116,72 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this._errorMsg = errorMsg;
     this._triggerError = true;
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnError);
+  }
+
+  GetFunctionFromAbi(abi, functionName) {
+    for (const abiItem of abi) {
+      if (abiItem.type === "function" && abiItem.name === functionName)
+        return abiItem;
+    }
+    return null;
+  }
+
+  SerializeData(data) {
+    if (typeof data === "bigint") {
+      return Number(data); // Convert BigInt to number
+    } else if (Array.isArray(data)) {
+      return data.map(this.SerializeData); // Recursively handle arrays
+    } else if (typeof data === "object" && data !== null) {
+      return Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          this.SerializeData(value),
+        ])
+      ); // Recursively handle objects
+    }
+    return data; // Return other data types unchanged
+  }
+
+  GetURLParams({ params, paramsToSkip = [] }) {
+    const requestParams = new URLSearchParams();
+
+    Object.keys(params)
+      .filter((param) => !paramsToSkip.includes(param))
+      .forEach((param) => {
+        const value = params[param];
+        if (param === "sort")
+          requestParams.append(
+            `sort[${value.sortKey}]`,
+            `${value.sortDirection}`
+          );
+        else if (param === "tokens" || param === "skipTokens")
+          value.forEach((token) => {
+            requestParams.append(
+              `${param}[${token.contractAddress}]`,
+              token.tokenId.toString()
+            );
+          });
+        else if (param === "collections")
+          value.forEach((collection) => {
+            requestParams.append(
+              `${param}[${collection.createdBy}]`,
+              collection.collectionName
+            );
+          });
+        else if (param === "properties") {
+          value.forEach((item) => {
+            if (item.name && isArrayPopulated(item.values)) {
+              item.values.forEach((v) => {
+                requestParams.append(`${param}[${item.name}]`, v.toString());
+              });
+            }
+          });
+        } else if (Array.isArray(value))
+          value.forEach((item) => requestParams.append(param, item.toString()));
+        else requestParams.append(param, value);
+      });
+
+    return requestParams;
   }
 
   // Actions
@@ -158,6 +244,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         wallet: this._account,
         signature,
         projectId: this._projectId,
+        platformId: this._platformId,
       };
 
       if (!(hasAccount && hasRulesChecked)) {
@@ -234,6 +321,43 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       }
 
       let leaderboard = await leaderboardResponse.json();
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-total/personal/${this._leaderboardId}/${this._userId}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (typeof personalData === "object") {
+          console.log(personalData);
+          personal = {
+            userId: this._userId,
+            position: personalData.mainScore.position,
+            currentScore: personalData.mainScore.currentRoundData.score,
+            totalScore: personalData.mainScore.totalRoundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -285,7 +409,31 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._leaderboard = leaderboard;
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-total/count/leaderboard/${this._leaderboardId}`
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
+      this._leaderboard = {
+        count,
+        results: leaderboard,
+        ...(!!personal && { personal }),
+      };
 
       this.OnLeaderboardReceived();
     } catch (error) {
@@ -334,7 +482,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _AddScore(score) {
+  async _AddScore(score, map_id) {
     try {
       // Create match ID
       const createMatchResponse = await fetch(
@@ -374,7 +522,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
             leaderboardId: this._leaderboardId,
             userId: this._userId,
             matchId,
-            map: this._mapId,
+            map: map_id,
             startedAt: new Date().toISOString(),
             endedAt: new Date().toISOString(),
             projectId: this._projectId,
@@ -396,7 +544,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       const params = new URLSearchParams({
         leaderboardId: this._leaderboardId,
-        map: this._mapId,
+        map: map_id,
       }).toString();
 
       const url = `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?${params}`;
@@ -427,12 +575,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _RequestBestScoresLeaderboardByMapId(limit) {
+  async _RequestBestScoresLeaderboardByMapId(map_id, limit) {
     try {
       const params = new URLSearchParams({
-        limit: limit || 20,
+        map: map_id,
         leaderboardId: this._leaderboardId,
-        map: this._mapId,
+        limit: limit || 20,
       }).toString();
 
       const url = `${this._leaderboardApiUrl}/score-map/get?${params}`;
@@ -452,8 +600,43 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         );
       }
 
-      const { results } = await leaderboardResponse.json();
+      const { results, count } = await leaderboardResponse.json();
       let leaderboard = results;
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?leaderboardId=${this._leaderboardId}&map=${map_id}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (!!personalData[0]) {
+          personal = {
+            userId: this._userId,
+            position: personalData[0].position,
+            bestScore: personalData[0].roundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -503,7 +686,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._bestScoresLeaderboard = leaderboard;
+      this._bestScoresLeaderboard = {
+        results: leaderboard,
+        count,
+        ...(!!personal && { personal }),
+      };
 
       this.OnBestScoresLeaderboardReceived();
     } catch (error) {
@@ -514,11 +701,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _RequestBestScore() {
+  async _RequestBestScore(map_id) {
     try {
       const params = new URLSearchParams({
+        map: map_id,
         leaderboardId: this._leaderboardId,
-        map: this._mapId,
       }).toString();
 
       const url = `${this._leaderboardApiUrl}/score-map/get/personal/${this._userId}?${params}`;
@@ -581,6 +768,42 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       }
 
       let leaderboard = await leaderboardResponse.json();
+      let personal = null;
+
+      if (this._userId) {
+        const personalResponse = await fetch(
+          `${this._leaderboardApiUrl}/score-total/personal/${this._leaderboardId}/${this._userId}`,
+          {
+            headers: {
+              leaderboardApiKey: this._leaderboardApiKey,
+            },
+          }
+        );
+
+        if (!personalResponse.ok) {
+          const errorData = await personalResponse.json();
+          throw new Error(
+            errorData?.messages?.[0] ||
+              errorData?.message ||
+              "Something went wrong. Try again later!"
+          );
+        }
+
+        const personalData = await personalResponse.json();
+
+        if (typeof personalData === "object") {
+          personal = {
+            userId: this._userId,
+            position: personalData.mainScore.position,
+            currentScore: personalData.mainScore.currentRoundData.score,
+            totalScore: personalData.mainScore.totalRoundData.score,
+            username:
+              this._personalDetails?.username ||
+              this.ShortenText(this._account, 6, 4),
+            avatar: this._personalDetails?.avatar || "",
+          };
+        }
+      }
 
       if (leaderboard.length > 0) {
         const requestParams = new URLSearchParams({ limit: 99999 });
@@ -632,7 +855,31 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       }
 
-      this._referralLeaderboard = leaderboard;
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-total/count/leaderboard/${ref_leaderboard_id}`
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
+      this._referralLeaderboard = {
+        results: leaderboard,
+        count,
+        ...(!!personal && { personal }),
+      };
 
       this.OnReferralLeaderboardReceived();
     } catch (error) {
@@ -886,6 +1133,274 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
+  async _SendContractTransaction(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    chain_id
+  ) {
+    try {
+      if (!this._account) {
+        throw new Error("Account information is missing or not initialized.");
+      }
+
+      const parsedAbi = JSON.parse(abi);
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const inputData = JSON.parse(
+        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+      );
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+
+      this._transactionStatus = "pending";
+
+      await this.PostToDOMAsync("switch-chain", chain_id);
+
+      const contract = new web3.eth.Contract(parsedAbi, contract_address);
+      const estimatedGas = await contract.methods[function_name](
+        ...inputData
+      ).estimateGas({
+        from: this._account,
+      });
+      const currentGasPrice = await web3.eth.getGasPrice();
+
+      const transaction = await contract.methods[function_name](
+        ...inputData
+      ).send({
+        from: this._account,
+        gas: estimatedGas,
+        gasPrice: currentGasPrice,
+      });
+
+      this._lastTransactionHash = transaction.transactionHash;
+
+      // Wait for transaction confirmation
+      const timeout = 120000; // 120sec
+      const startTime = Date.now();
+      let receipt = null;
+
+      while (receipt === null) {
+        receipt = await web3.eth.getTransactionReceipt(
+          transaction.transactionHash
+        );
+
+        if (receipt === null) {
+          const elapsedTime = Date.now() - startTime;
+
+          if (elapsedTime > timeout) {
+            throw new Error("Transaction confirmation timed out.");
+          }
+
+          // Wait for a short time before polling again to avoid spamming the node
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+      }
+
+      if (!!receipt && this.SerializeData(receipt.status)) {
+        this._transactionStatus = "success";
+      } else {
+        throw new Error("Transaction failed or was reverted.");
+      }
+
+      this.OnTransactionSent();
+    } catch (error) {
+      console.log(error);
+      this._transactionStatus = "error";
+      this.HandleError(error.message);
+    }
+  }
+
+  _SetTransactionStatus(status) {
+    this._transactionStatus = status;
+  }
+
+  async _ReadContract(
+    contract_address,
+    abi,
+    function_name,
+    input_data,
+    rpc_url
+  ) {
+    try {
+      const parsedAbi = JSON.parse(abi);
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const inputData = JSON.parse(
+        input_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+      );
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+      const web3Provider = new Web3.providers.HttpProvider(rpc_url);
+      const web3 = new Web3(web3Provider);
+      const contract = new web3.eth.Contract(parsedAbi, contract_address);
+      const readData = await contract.methods[function_name](
+        ...inputData
+      ).call();
+
+      this._lastReadContractData = this.SerializeData(readData);
+
+      this.OnReadContractDataReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to send transaction: " + error.message);
+    }
+  }
+
+  async _MultipleReadContract(
+    contract_address,
+    abi,
+    function_names,
+    inputs_data,
+    rpc_url
+  ) {
+    const parsedAbi = JSON.parse(abi);
+    const functionsArray = JSON.parse(
+      function_names.replace(/&quot;/g, '"').replace(/'/g, '"')
+    );
+    const inputsArray = JSON.parse(
+      inputs_data.replace(/&quot;/g, '"').replace(/'/g, '"')
+    );
+    const web3Provider = new Web3.providers.HttpProvider(rpc_url);
+    const web3 = new Web3(web3Provider);
+    const contract = new web3.eth.Contract(parsedAbi, contract_address);
+
+    const promises = functionsArray.map(async (function_name, index) => {
+      const functionAbi = this.GetFunctionFromAbi(parsedAbi, function_name);
+      if (!functionAbi) {
+        throw new Error(
+          `Function "${function_name}" not found in the provided ABI.`
+        );
+      }
+
+      const inputData = inputsArray[index];
+
+      const missingKeys = functionAbi.inputs.length !== inputData.length;
+      if (missingKeys) {
+        throw new Error("Mismatch in number of function arguments");
+      }
+
+      // Call the contract function and return the result
+      return contract.methods[function_name](...inputData).call();
+    });
+    try {
+      const data = await Promise.all(promises);
+
+      this._lastMultipleReadContractData = this.SerializeData(data);
+
+      this.OnMultipleReadContractDataReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Failed to send transaction: " + error.message);
+    }
+  }
+
+  async _RequestNumberOfRuns(map_id) {
+    try {
+      const params = new URLSearchParams({
+        leaderboardId: this._leaderboardId,
+        ...(map_id && { map: map_id }),
+      }).toString();
+
+      const countResponse = await fetch(
+        `${this._leaderboardApiUrl}/score-map/get/count/${this._userId}?${params}`,
+        {
+          headers: {
+            leaderboardApiKey: this._leaderboardApiKey,
+          },
+        }
+      );
+
+      if (!countResponse.ok) {
+        const errorData = await countResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      let count = 0;
+      try {
+        count = Number(await countResponse.text());
+      } catch (err) {
+        console.log(err);
+      }
+
+      this._numberOfRuns = count;
+
+      this.OnNumberOfRunsReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Requesting user score failed: " + error.message);
+    }
+  }
+
+  _CheckReferralCodeFromDeeplink() {
+    const refCode = this.PostToDOM("get-referral-code-from-deeplink");
+
+    if (refCode) {
+      this._refCodeFromDeeplink = refCode;
+
+      this.OnRefCodeFromDeeplinkExists();
+    }
+  }
+
+  async _RequestUserNfts(query) {
+    try {
+      let parsedQuery = {};
+
+      if (!!query) {
+        parsedQuery = JSON.parse(
+          query.replace(/&quot;/g, '"').replace(/'/g, '"')
+        );
+      }
+
+      const requestParams = this.GetURLParams({
+        params: parsedQuery,
+      });
+
+      const nftResponse = await fetch(
+        `${this._nftApiUrl}/v1/user/${this._account}/tokens?${requestParams}`
+      );
+
+      if (!nftResponse.ok) {
+        const errorData = await nftResponse.json();
+        throw new Error(
+          errorData?.messages?.[0] ||
+            errorData?.message ||
+            "Something went wrong. Try again later!"
+        );
+      }
+
+      const nfts = await nftResponse.json();
+
+      this._userNfts = nfts;
+
+      this.OnUserNftsReceived();
+    } catch (error) {
+      console.log(error);
+      this.HandleError("Requesting user nfts failed: " + error.message);
+    }
+  }
+
   // Conditions
   OnAccountReceived() {
     this._triggerAccountReceived = true;
@@ -962,6 +1477,38 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReferralLeaderboardReceived);
   }
 
+  OnTransactionSent() {
+    this._triggerTransactionSent = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnTransactionSent);
+  }
+
+  OnNumberOfRunsReceived() {
+    this._triggerNumberOfRunsReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnNumberOfRunsReceived);
+  }
+
+  OnRefCodeFromDeeplinkExists() {
+    this._triggerRefCodeFromDeeplinkExists = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnRefCodeFromDeeplinkExists);
+  }
+
+  OnUserNftsReceived() {
+    this._triggerUserNftsReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnUserNftsReceived);
+  }
+
+  OnReadContractDataReceived() {
+    this._triggerReadContractDataReceived = true;
+    this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnReadContractDataReceived);
+  }
+
+  OnMultipleReadContractDataReceived() {
+    this._triggerMultipleReadContractDataReceived = true;
+    this.Trigger(
+      C3.Plugins.MetaproPlugin.Cnds.OnMultipleReadContractDataReceived
+    );
+  }
+
   // Expressions
   _GetAccount() {
     return this._account;
@@ -1015,6 +1562,34 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return this._referralLeaderboard;
   }
 
+  _GetNumberOfRuns() {
+    return this._numberOfRuns;
+  }
+
+  _GetRefCodeFromDeeplink() {
+    return this._refCodeFromDeeplink;
+  }
+
+  _GetLastTransactionHash() {
+    return this._lastTransactionHash;
+  }
+
+  _GetTransactionStatus() {
+    return this._transactionStatus;
+  }
+
+  _GetLastReadContractData() {
+    return this._lastReadContractData;
+  }
+
+  _GetLastMultipleReadContractData() {
+    return this._lastMultipleReadContractData;
+  }
+
+  _GetUserNfts() {
+    return this._userNfts;
+  }
+
   _GetLastError() {
     return this._errorMsg;
   }
@@ -1043,8 +1618,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     return this._referralApiUrl;
   }
 
-  _GetMapId() {
-    return this._mapId;
+  _GetNftApiUrl() {
+    return this._nftApiUrl;
+  }
+
+  _GetPlatformId() {
+    return this._platformId;
   }
 
   Release() {
