@@ -448,6 +448,29 @@
                 "desc": "The status value to set for the internal transaction status variable."
               }
             }
+          },
+          "send-crypto": {
+            "list-name": "Send Crypto",
+            "display-text": "Send {1} amount of tokens from contract address {0} to receiver {2} on chain ID {3}.",
+            "description": "Sends cryptocurrency from the specified contract address to a receiver, including the amount and target chain ID.",
+            "params": {
+              "token-address": {
+                "name": "Token Contract Address",
+                "desc": "Address of the token contract to send cryptocurrency from."
+              },
+              "amount": {
+                "name": "Amount",
+                "desc": "The amount of cryptocurrency to send (Unit Converter: https://etherscan.io/unitconverter)."
+              },
+              "receiver": {
+                "name": "Receiver Address",
+                "desc": "The address of the receiver to whom the cryptocurrency will be sent."
+              },
+              "chain-id": {
+                "name": "Chain ID",
+                "desc": "The target blockchain network ID, provided as a decimal."
+              }
+            }
           }
         },
         "expressions": {

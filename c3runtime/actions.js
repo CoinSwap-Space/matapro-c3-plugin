@@ -113,4 +113,7 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   SetTransactionStatus(status) {
     this._SetTransactionStatus(status);
   },
+  async SendCrypto(token_address, amount, receiver, chain_id) {
+    await this._SendCrypto(token_address, amount, receiver, chain_id);
+  },
 };

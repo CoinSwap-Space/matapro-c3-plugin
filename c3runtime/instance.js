@@ -1216,7 +1216,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     } catch (error) {
       console.log(error);
       this._transactionStatus = "error";
-      this.HandleError(error.message);
+      this.HandleError(error.data?.message || error.message);
     }
   }
 
@@ -1260,7 +1260,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this.OnReadContractDataReceived();
     } catch (error) {
       console.log(error);
-      this.HandleError("Failed to send transaction: " + error.message);
+      this.HandleError(error.data?.message || error.message);
     }
   }
 
@@ -1308,7 +1308,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       this.OnMultipleReadContractDataReceived();
     } catch (error) {
       console.log(error);
-      this.HandleError("Failed to send transaction: " + error.message);
+      this.HandleError(error.data?.message || error.message);
     }
   }
 
@@ -1398,6 +1398,107 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     } catch (error) {
       console.log(error);
       this.HandleError("Requesting user nfts failed: " + error.message);
+    }
+  }
+
+  async _SendCrypto(token_address, amount, receiver, chain_id) {
+    const abi = [
+      {
+        constant: false,
+        inputs: [
+          { name: "_to", type: "address" },
+          { name: "_value", type: "uint256" },
+        ],
+        name: "transfer",
+        outputs: [{ name: "", type: "bool" }],
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [{ name: "_owner", type: "address" }],
+        name: "balanceOf",
+        outputs: [{ name: "balance", type: "uint256" }],
+        type: "function",
+      },
+    ];
+
+    this._transactionStatus = "pending";
+    try {
+      if (!this._account) {
+        throw new Error("Account information is missing or not initialized.");
+      }
+
+      await this.PostToDOMAsync("switch-chain", chain_id);
+
+      const amountInBigInt = BigInt(amount);
+      const currentGasPrice = await web3.eth.getGasPrice();
+      let transaction;
+
+      if (!token_address) {
+        const tx = {
+          from: this._account,
+          to: receiver,
+          value: amountInBigInt,
+        };
+        const estimatedGas = await web3.eth.estimateGas(tx);
+
+        transaction = await web3.eth.sendTransaction({
+          ...tx,
+          gas: estimatedGas,
+          gasPrice: currentGasPrice,
+        });
+      } else {
+        const contract = new web3.eth.Contract(abi, token_address);
+        const estimatedGas = await contract.methods
+          .transfer(receiver, amountInBigInt)
+          .estimateGas({
+            from: this._account,
+          });
+
+        transaction = await contract.methods
+          .transfer(receiver, amountInBigInt)
+          .send({
+            from: this._account,
+            gas: estimatedGas,
+            gasPrice: currentGasPrice,
+          });
+      }
+
+      this._lastTransactionHash = transaction.transactionHash;
+
+      // Wait for transaction confirmation
+      const timeout = 120000; // 120sec
+      const startTime = Date.now();
+      let receipt = null;
+
+      while (receipt === null) {
+        receipt = await web3.eth.getTransactionReceipt(
+          transaction.transactionHash
+        );
+
+        if (receipt === null) {
+          const elapsedTime = Date.now() - startTime;
+
+          if (elapsedTime > timeout) {
+            throw new Error("Transaction confirmation timed out.");
+          }
+
+          // Wait for a short time before polling again to avoid spamming the node
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+      }
+
+      if (!!receipt && this.SerializeData(receipt.status)) {
+        this._transactionStatus = "success";
+      } else {
+        throw new Error("Transaction failed or was reverted.");
+      }
+
+      this.OnTransactionSent();
+    } catch (error) {
+      console.log(error);
+      this._transactionStatus = "error";
+      this.HandleError(error.data?.message || error.message);
     }
   }
 
