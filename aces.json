@@ -284,6 +284,17 @@
         "id": "set-transaction-status",
         "scriptName": "SetTransactionStatus",
         "params": [{ "id": "status", "type": "string" }]
+      },
+      {
+        "id": "send-crypto",
+        "scriptName": "SendCrypto",
+        "isAsync": true,
+        "params": [
+          { "id": "token-address", "type": "string" },
+          { "id": "amount", "type": "string" },
+          { "id": "receiver", "type": "string" },
+          { "id": "chain-id", "type": "number" }
+        ]
       }
     ],
     "expressions": [
