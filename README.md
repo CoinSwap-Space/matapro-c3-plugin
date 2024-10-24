@@ -1,5 +1,23 @@
 # Metapro Plugin for Construct 3
 
+Metapro is a powerful plugin for Construct 3 that enables developers to integrate blockchain functionality, user management, and leaderboard systems into their games and applications.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Properties](#properties)
+- [Supported API Calls](#supported-api-calls)
+  - [Actions](#actions)
+  - [Conditions](#conditions)
+  - [Expressions](#expressions)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Author](#author)
+- [License](#license)
+
 ## Features
 
 - **Account Management**:
@@ -44,24 +62,38 @@
 
 ## Installation
 
-The Metapro Plugin can be added through either the Construct store or as a dev addon in the editor.
+The Metapro Plugin can be added to your Construct 3 project in two ways:
 
-## Downloads
+1. Through the Construct store:
 
-The Metapro Plugin addons are available in builds directory.
+   - Open Construct 3
+   - Go to Menu -> View -> Addons
+   - Search for "Metapro"
+   - Click "Add" to install the plugin
 
-### Properties
+2. As a dev addon in the editor:
+   - Download the Metapro Plugin addon from the `builds` directory in this repository
+   - In Construct 3, go to Menu -> View -> Addons
+   - Click "Install new addon" and select the downloaded file
 
-| **Property Name**           | **Description**                                                |
-| --------------------------- | -------------------------------------------------------------- |
-| **Users Service API URL**   | The URL of the Users Service API used by the Metapro system.   |
-| **Project ID**              | The unique identifier for your project in Metapro.             |
-| **Leaderboard ID**          | The ID of the leaderboard used in the Metapro system.          |
-| **Referral Leaderboard ID** | The ID of the referral leaderboard used in the Metapro system. |
-| **Leaderboard API Key**     | The API key required to access the leaderboard.                |
-| **Leaderboard API URL**     | The URL of the Leaderboard API used in the Metapro system.     |
-| **Referral API URL**        | The URL of the Referral API used in the Metapro system.        |
-| **Platform ID**             | The ID of the platform associated with the project.            |
+## Getting Started
+
+1. After installation, add the Metapro object to your project layout.
+2. Configure the plugin properties (see [Properties](#properties) section).
+3. Use the provided actions, conditions, and expressions in your event sheets to interact with Metapro functionality.
+
+## Properties
+
+| Property Name           | Description                                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| Users Service API URL   | The URL of the Users Service API used by the Metapro system.   |
+| Project ID              | The unique identifier for your project in Metapro.             |
+| Leaderboard ID          | The ID of the leaderboard used in the Metapro system.          |
+| Referral Leaderboard ID | The ID of the referral leaderboard used in the Metapro system. |
+| Leaderboard API Key     | The API key required to access the leaderboard.                |
+| Leaderboard API URL     | The URL of the Leaderboard API used in the Metapro system.     |
+| Referral API URL        | The URL of the Referral API used in the Metapro system.        |
+| Platform ID             | The ID of the platform associated with the project.            |
 
 ## Supported API Calls
 
@@ -90,6 +122,7 @@ The Metapro Plugin addons are available in builds directory.
 | **Request User NFTs**               | Retrieves the NFTs owned by a user based on a provided query as stringified JSON.                                                   | **Query**: A stringified JSON representation of the query params. Example format: `{'tokens': [{'contractAddress': '0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377', 'tokenId': 123}], 'sort': {'sortKey': 'token.creationBlock', 'sortDirection': 'desc'}}`.                                                                                                                                                                                                                                   |
 | **Set Transaction Status**          | Sets the internal transaction status variable to the provided status value.                                                         | **Status**: The status value to set for the internal transaction status variable.                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Multiple Read Contract**          | Reads data from a smart contract at the specified address using the provided ABI, multiple function names, input data, and RPC URL. | **Contract Address**: The address of the smart contract.<br>**ABI**: A JSON stringified representation of the ABI.<br>**Function Names**: A JSON stringified representation of the array of function names to be called.<br>**Inputs Data**: A JSON stringified representation of the array of input data for each function call.<br>**RPC URL**: The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain.                                                  |
+| **Send Crypto**                     | Send a transaction to transfer cryptocurrency or tokens from one address to another, based on the specified token contract.         | **Token Contract Address**: The address of the token contract to send cryptocurrency from. If empty, sends native cryptocurrency (e.g., ETH, BNB).<br>**Amount**: The amount of cryptocurrency to send, provided in proper unit. Unit converter: https://etherscan.io/unitconverter.<br>**Receiver Address**: The address of the receiver.<br>**Chain ID**: The target blockchain network ID (e.g., 1 for Ethereum Mainnet, 56 for Binance Smart Chain).                                    |
 
 ### Conditions
 
@@ -148,6 +181,35 @@ The Metapro Plugin addons are available in builds directory.
 | **Get User NFTs**                   | Retrieve the NFTs owned by the user.                                                                      |
 | **Get NFT API URL**                 | Retrieve the URL for accessing the NFT API.                                                               |
 | **Get Transaction Status**          | Retrieves the current transaction status from the internal status variable.                               |
+
+## Usage
+
+Here's a simple example of how to use the Metapro plugin to request a user's account:
+
+1. Add the Metapro object to your layout.
+2. In your event sheet, add a new event.
+3. For the event's condition, you might use a button click or a system start.
+4. Add an action to this event: Metapro -> Request Account.
+5. Add another event with the condition: Metapro -> On Account Received.
+6. In this event, you can add actions to use the received account, such as displaying it or using it for further authentication.
+
+## Troubleshooting
+
+- If you encounter issues with API calls, ensure that all required properties are correctly set in the Metapro object.
+- Check the browser console for any error messages related to Metapro.
+- Use the "Get Last Error" expression to retrieve detailed error information when an operation fails.
+
+## Contributing
+
+We welcome contributions to improve the Metapro plugin! If you'd like to contribute:
+
+1. Fork the repository
+2. Create a new branch for your feature or bug fix
+3. Make your changes and commit them with clear, descriptive messages
+4. Push your changes to your fork
+5. Submit a pull request with a description of your changes
+
+Please ensure your code adheres to the existing style and includes appropriate tests.
 
 ## Author
 
