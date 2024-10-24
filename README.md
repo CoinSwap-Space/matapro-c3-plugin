@@ -65,6 +65,7 @@ Metapro is a powerful plugin for Construct 3 that enables developers to integrat
 The Metapro Plugin can be added to your Construct 3 project in two ways:
 
 1. Through the Construct store:
+
    - Open Construct 3
    - Go to Menu -> View -> Addons
    - Search for "Metapro"
@@ -83,16 +84,16 @@ The Metapro Plugin can be added to your Construct 3 project in two ways:
 
 ## Properties
 
-| Property Name | Description |
-|---------------|-------------|
-| Users Service API URL | The URL of the Users Service API used by the Metapro system. |
-| Project ID | The unique identifier for your project in Metapro. |
-| Leaderboard ID | The ID of the leaderboard used in the Metapro system. |
+| Property Name           | Description                                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| Users Service API URL   | The URL of the Users Service API used by the Metapro system.   |
+| Project ID              | The unique identifier for your project in Metapro.             |
+| Leaderboard ID          | The ID of the leaderboard used in the Metapro system.          |
 | Referral Leaderboard ID | The ID of the referral leaderboard used in the Metapro system. |
-| Leaderboard API Key | The API key required to access the leaderboard. |
-| Leaderboard API URL | The URL of the Leaderboard API used in the Metapro system. |
-| Referral API URL | The URL of the Referral API used in the Metapro system. |
-| Platform ID | The ID of the platform associated with the project. |
+| Leaderboard API Key     | The API key required to access the leaderboard.                |
+| Leaderboard API URL     | The URL of the Leaderboard API used in the Metapro system.     |
+| Referral API URL        | The URL of the Referral API used in the Metapro system.        |
+| Platform ID             | The ID of the platform associated with the project.            |
 
 ## Supported API Calls
 
@@ -121,6 +122,7 @@ The Metapro Plugin can be added to your Construct 3 project in two ways:
 | **Request User NFTs**               | Retrieves the NFTs owned by a user based on a provided query as stringified JSON.                                                   | **Query**: A stringified JSON representation of the query params. Example format: `{'tokens': [{'contractAddress': '0x3203c9e46ca618c8c1ce5dc67e7e9d75f5da2377', 'tokenId': 123}], 'sort': {'sortKey': 'token.creationBlock', 'sortDirection': 'desc'}}`.                                                                                                                                                                                                                                   |
 | **Set Transaction Status**          | Sets the internal transaction status variable to the provided status value.                                                         | **Status**: The status value to set for the internal transaction status variable.                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Multiple Read Contract**          | Reads data from a smart contract at the specified address using the provided ABI, multiple function names, input data, and RPC URL. | **Contract Address**: The address of the smart contract.<br>**ABI**: A JSON stringified representation of the ABI.<br>**Function Names**: A JSON stringified representation of the array of function names to be called.<br>**Inputs Data**: A JSON stringified representation of the array of input data for each function call.<br>**RPC URL**: The URL of the Remote Procedure Call (RPC) endpoint for interacting with the blockchain.                                                  |
+| **Send Crypto**                     | Send a transaction to transfer cryptocurrency or tokens from one address to another, based on the specified token contract.         | **Token Contract Address**: The address of the token contract to send cryptocurrency from. If empty, sends native cryptocurrency (e.g., ETH, BNB).<br>**Amount**: The amount of cryptocurrency to send, provided in proper unit. Unit converter: https://etherscan.io/unitconverter.<br>**Receiver Address**: The address of the receiver.<br>**Chain ID**: The target blockchain network ID (e.g., 1 for Ethereum Mainnet, 56 for Binance Smart Chain).                                    |
 
 ### Conditions
 
