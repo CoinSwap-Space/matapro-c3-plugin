@@ -11,7 +11,7 @@ const SDK = self.SDK;
 const PLUGIN_ID = "MetaproPlugin";
 ////////////////////////////////////////////
 
-const PLUGIN_VERSION = "3.12.0.0";
+const PLUGIN_VERSION = "3.12.1.0";
 const PLUGIN_CATEGORY = "platform-specific";
 
 const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
