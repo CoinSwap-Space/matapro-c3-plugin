@@ -1123,7 +1123,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this._referralStructure = response.map((refLevel) => ({
         ...refLevel,
-        percentage: refLevel.percentage * 10,
+        percentage: refLevel.percentage * 100,
       }));
 
       this.OnReferralStructureReceived();
