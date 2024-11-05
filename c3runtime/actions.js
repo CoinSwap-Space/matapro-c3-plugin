@@ -32,8 +32,8 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestReferralStructure() {
     await this._RequestReferralStructure();
   },
-  async AddScore(score, map_id) {
-    await this._AddScore(score, map_id);
+  async AddScore(score, map_id, asset_id, addons) {
+    await this._AddScore(score, map_id, asset_id, addons);
   },
   async RequestBestScore(map_id) {
     await this._RequestBestScore(map_id);
