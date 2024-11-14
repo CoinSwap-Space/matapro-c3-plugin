@@ -197,7 +197,9 @@
         "isAsync": true,
         "params": [
           { "id": "score", "type": "number" },
-          { "id": "map-id", "type": "number" }
+          { "id": "map-id", "type": "number" },
+          { "id": "asset-id", "type": "number", "initialValue": "0" },
+          { "id": "addons", "type": "string", "initialValue": "" }
         ]
       },
       {

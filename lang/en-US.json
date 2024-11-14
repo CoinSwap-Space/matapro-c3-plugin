@@ -6,7 +6,7 @@
       "metaproplugin": {
         "name": "Metapro Plugin",
         "description": "Metapro Plugin addon for Web3 connection, user management, and leaderboard integration.",
-        "help-url": "https://metapro.one/",
+        "help-url": "https://docs.metaproprotocol.com/developer-documentation/developer-documentation-for-the-construct-3-plugin",
         "properties": {
           "users-service-api-url": {
             "name": "Users Service API URL",
@@ -264,7 +264,7 @@
           },
           "add-score": {
             "list-name": "Add score",
-            "display-text": "Add score {0} for map ID {1}",
+            "display-text": "Add score {0} for map ID {1} with used asset {2} and addons {3}",
             "description": "Add a new entry score for user.",
             "params": {
               "score": {
@@ -274,6 +274,14 @@
               "map-id": {
                 "name": "Map ID",
                 "desc": "The ID of the map."
+              },
+              "asset-id": {
+                "name": "Asset ID",
+                "desc": "The ID of the used asset."
+              },
+              "addons": {
+                "name": "Addons",
+                "desc": "The IDs of the used addons."
               }
             }
           },
