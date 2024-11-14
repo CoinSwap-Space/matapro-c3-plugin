@@ -11,7 +11,7 @@ const SDK = self.SDK;
 const PLUGIN_ID = "MetaproPlugin";
 ////////////////////////////////////////////
 
-const PLUGIN_VERSION = "3.12.1.0";
+const PLUGIN_VERSION = "3.13.0.0";
 const PLUGIN_CATEGORY = "platform-specific";
 
 const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
@@ -29,13 +29,7 @@ const PLUGIN_CLASS = (SDK.Plugins.MetaproPlugin = class MyCustomPlugin extends (
     this._info.SetAuthor("metapro");
     this._info.SetHelpUrl(self.lang(".help-url"));
     this._info.SetIsSingleGlobal(true);
-
-    // File dependencies. Make sure these match with addon.json file-list
-    this._info.AddFileDependency({
-      filename: "icon.svg",
-      type: "copy-to-output",
-      fileType: "image/svg",
-    });
+    this._info.SetIcon("icon.png", "image/png");
 
     // Load domSide.js in the document context (main thread).
     // This is important for supporting the runtime's web worker mode.
