@@ -345,7 +345,6 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         const personalData = await personalResponse.json();
 
         if (typeof personalData === "object") {
-          console.log(personalData);
           personal = {
             userId: this._userId,
             position: personalData.mainScore.position,
@@ -482,7 +481,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _AddScore(score, map_id) {
+  async _AddScore(score, map_id, asset_id, addons) {
     try {
       // Create match ID
       const createMatchResponse = await fetch(
@@ -509,6 +508,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       }
       const matchId = await createMatchResponse.text();
 
+      let parsedAddons = [];
+
+      if (!!addons) {
+        parsedAddons = JSON.parse(addons);
+      }
+
       // Create score per map
       const scoreResponse = await fetch(
         `${this._leaderboardApiUrl}/score-map/create`,
@@ -529,6 +534,8 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
             roundData: {
               score,
             },
+            ...(!!asset_id && { assetId: asset_id }),
+            ...(parsedAddons.length > 0 && { addons: parsedAddons }),
           }),
         }
       );
