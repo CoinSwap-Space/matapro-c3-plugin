@@ -113,6 +113,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
   }
 
   HandleError(errorMsg) {
+    console.log(errorMsg, "errorMsg");
     this._errorMsg = errorMsg;
     this._triggerError = true;
     this.Trigger(C3.Plugins.MetaproPlugin.Cnds.OnError);
@@ -1221,9 +1222,20 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this.OnTransactionSent();
     } catch (error) {
-      console.log(error);
+      console.log(error, "error");
+
       this._transactionStatus = "error";
-      this.HandleError(error.data?.message || error.message);
+
+      let errorMsg = "Something went wrong.";
+      if (typeof error === "string") {
+        errorMsg = error;
+      } else if (!!error.data?.message) {
+        errorMsg = error.data?.message;
+      } else if (!!error.message) {
+        errorMsg = error.message;
+      }
+
+      this.HandleError(errorMsg);
     }
   }
 
@@ -1266,8 +1278,20 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this.OnReadContractDataReceived();
     } catch (error) {
-      console.log(error);
-      this.HandleError(error.data?.message || error.message);
+      console.log(error, "error");
+
+      this._transactionStatus = "error";
+
+      let errorMsg = "Something went wrong.";
+      if (typeof error === "string") {
+        errorMsg = error;
+      } else if (!!error.data?.message) {
+        errorMsg = error.data?.message;
+      } else if (!!error.message) {
+        errorMsg = error.message;
+      }
+
+      this.HandleError(errorMsg);
     }
   }
 
@@ -1314,8 +1338,20 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this.OnMultipleReadContractDataReceived();
     } catch (error) {
-      console.log(error);
-      this.HandleError(error.data?.message || error.message);
+      console.log(error, "error");
+
+      this._transactionStatus = "error";
+
+      let errorMsg = "Something went wrong.";
+      if (typeof error === "string") {
+        errorMsg = error;
+      } else if (!!error.data?.message) {
+        errorMsg = error.data?.message;
+      } else if (!!error.message) {
+        errorMsg = error.message;
+      }
+
+      this.HandleError(errorMsg);
     }
   }
 
@@ -1503,9 +1539,20 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 
       this.OnTransactionSent();
     } catch (error) {
-      console.log(error);
+      console.log(error, "error");
+
       this._transactionStatus = "error";
-      this.HandleError(error.data?.message || error.message);
+
+      let errorMsg = "Something went wrong.";
+      if (typeof error === "string") {
+        errorMsg = error;
+      } else if (!!error.data?.message) {
+        errorMsg = error.data?.message;
+      } else if (!!error.message) {
+        errorMsg = error.message;
+      }
+
+      this.HandleError(errorMsg);
     }
   }
 
