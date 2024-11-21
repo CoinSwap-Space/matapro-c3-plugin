@@ -22,17 +22,6 @@
     constructor(iRuntime) {
       super(iRuntime, DOM_COMPONENT_ID);
 
-      // Add keccak256 library
-      var keccakScriptEl = document.createElement("script");
-      keccakScriptEl.type = "text/javascript";
-      keccakScriptEl.src =
-        "https://cdn.jsdelivr.net/npm/keccak256@latest/keccak256.js";
-      document.getElementsByTagName("head")[0].appendChild(keccakScriptEl);
-
-      keccakScriptEl.onload = function () {
-        console.log("keccak256 library loaded successfully!");
-      };
-
       // Add web3.js library
       var web3ScriptEl = document.createElement("script");
       web3ScriptEl.type = "text/javascript";
@@ -97,18 +86,21 @@
 
     async _SwitchChain(chainId) {
       const provider = window.ethereum;
+      let currentChainId = parseInt(provider?.chainId, 16);
 
-      if (!window?.metapro?.isMetapro) {
-        await provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: `0x${chainId.toString(16)}` }],
-        });
-      } else {
-        const currentChainId = parseInt(provider?.chainId, 16);
+      if (currentChainId === chainId) {
+        return;
+      }
 
-        if (currentChainId !== chainId) {
-          throw new Error("Incorrect chain selected.");
-        }
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: `0x${chainId.toString(16)}` }],
+      });
+
+      currentChainId = parseInt(provider?.chainId, 16);
+
+      if (currentChainId !== chainId) {
+        throw new Error("Incorrect chain selected.");
       }
     }
 
