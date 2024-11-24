@@ -38,6 +38,17 @@ self.C3.Plugins.MetaproPlugin.Exps = {
   GetBestScore() {
     return this._GetBestScore();
   },
+  GetDynamicReward() {
+    const result = this._GetDynamicReward();
+
+    if (typeof result === "object") {
+      // If the result is an object, return its JSON string representation
+      return JSON.stringify(result);
+    } else {
+      // If the result is a number, return it directly
+      return result;
+    }
+  },
   GetBestScoresLeaderboard() {
     const leaderboard = this._GetBestScoresLeaderboard();
     const jsonLeaderboard = JSON.stringify(leaderboard);
