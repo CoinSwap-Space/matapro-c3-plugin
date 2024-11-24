@@ -206,12 +206,16 @@
           },
           "update-score": {
             "list-name": "Update Score",
-            "display-text": "Update user score with {0}",
+            "display-text": "Update user score with {0} and include {1} as dynamic rewards",
             "description": "Updates user score.",
             "params": {
               "score": {
                 "name": "Score",
                 "desc": "The score value to be updated for the user."
+              },
+              "dynamic-rewards": {
+                "name": "Dynamic Rewards",
+                "desc": "Optional rewards to be updated alongside the user score, such as coins, gasoline, etc. Provide an object with reward names as keys and values as the amounts."
               }
             }
           },
@@ -244,8 +248,14 @@
           },
           "request-user-score": {
             "list-name": "Request User Score",
-            "display-text": "Requests user score.",
-            "description": "Requests user current and total score within provided leaderboard."
+            "display-text": "Requests user score and dynamic rewards {0}.",
+            "description": "Requests user current and total score within provided leaderboard, including specified dynamic rewards.",
+            "params": {
+              "dynamic-rewards-names": {
+                "name": "Dynamic Rewards Names",
+                "desc": "A single dynamic reward name or a list of dynamic reward names to be included in the score request (e.g., coins, gasoline)."
+              }
+            }
           },
           "fetch-referral-code": {
             "list-name": "Fetch Referral Code",
@@ -264,7 +274,7 @@
           },
           "add-score": {
             "list-name": "Add score",
-            "display-text": "Add score {0} for map ID {1} with used asset {2} and addons {3}",
+            "display-text": "Add score {0} for map ID {1}, using asset {2}, addons {3}, and including {4} as dynamic rewards",
             "description": "Add a new entry score for user.",
             "params": {
               "score": {
@@ -282,6 +292,10 @@
               "addons": {
                 "name": "Addons",
                 "desc": "The IDs of the used addons."
+              },
+              "dynamic-rewards": {
+                "name": "Dynamic Rewards",
+                "desc": "Optional rewards to be updated alongside the user score, such as coins, gasoline, etc. Provide an object with reward names as keys and values as the amounts."
               }
             }
           },
@@ -625,6 +639,11 @@
           "get-transaction-status": {
             "description": "Retrieves the current transaction status from the internal status variable.",
             "translated-name": "Get Transaction Status",
+            "params": {}
+          },
+          "get-dynamic-reward": {
+            "description": "Retrieves the current dynamic reward status from the internal status variable. Returns a number if a single reward is requested, or a stringified object if multiple rewards are requested.",
+            "translated-name": "Get Dynamic Reward Status",
             "params": {}
           }
         }
