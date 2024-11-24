@@ -8,8 +8,8 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestLeaderboard(limit, min_balance, max_balance) {
     await this._RequestLeaderboard(limit, min_balance, max_balance);
   },
-  async UpdateScore(score) {
-    await this._UpdateScore(score);
+  async UpdateScore(score, dynamic_rewards) {
+    await this._UpdateScore(score, dynamic_rewards);
   },
   async UpdateUsername(username) {
     await this._UpdateUsername(username);
@@ -20,8 +20,8 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async CheckIfRegistered() {
     await this._CheckIfRegistered();
   },
-  async RequestUserScore() {
-    await this._RequestUserScore();
+  async RequestUserScore(dynamic_rewards_names) {
+    await this._RequestUserScore(dynamic_rewards_names);
   },
   async FetchReferralCode() {
     await this._FetchReferralCode();
@@ -32,8 +32,8 @@ self.C3.Plugins.MetaproPlugin.Acts = {
   async RequestReferralStructure() {
     await this._RequestReferralStructure();
   },
-  async AddScore(score, map_id, asset_id, addons) {
-    await this._AddScore(score, map_id, asset_id, addons);
+  async AddScore(score, map_id, asset_id, addons, dynamic_rewards) {
+    await this._AddScore(score, map_id, asset_id, addons, dynamic_rewards);
   },
   async RequestBestScore(map_id) {
     await this._RequestBestScore(map_id);
