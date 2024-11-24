@@ -1,6 +1,6 @@
 {
   "name": "plugin",
-  "version": "1.3.0.0",
+  "version": "1.4.0.0",
   "description": "",
   "main": "plugin.js",
   "scripts": {
@@ -9,5 +9,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
 }
