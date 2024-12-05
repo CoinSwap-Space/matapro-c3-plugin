@@ -498,6 +498,14 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
 			}
 			const updatedScore = await updateScoreResponse.json()
 
+			const dynamicRewardsNames = Object.keys(dynamicRewards)
+
+			this._dynamicRewards = dynamicRewardsNames.reduce((acc, rewardName) => {
+				acc[rewardName] =
+					updatedScore.scoreTotal.currentRoundData[rewardName] || 0
+				return acc
+			}, {})
+
 			this._currentScore = updatedScore.scoreTotal.currentRoundData.score
 			this._totalScore = updatedScore.scoreTotal.totalRoundData.score
 
