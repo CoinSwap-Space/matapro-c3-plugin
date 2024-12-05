@@ -86,21 +86,16 @@
 
     async _SwitchChain(chainId) {
       const provider = window.ethereum;
-      let currentChainId = parseInt(provider?.chainId, 16);
-
-      if (currentChainId === chainId) {
-        return;
-      }
-
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${chainId.toString(16)}` }],
-      });
-
-      currentChainId = parseInt(provider?.chainId, 16);
-
+      const currentChainId = parseInt(provider?.chainId, 16);
       if (currentChainId !== chainId) {
-        throw new Error("Incorrect chain selected.");
+        try {
+          await provider.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: `0x${chainId.toString(16)}` }],
+          });
+        } catch {
+          throw new Error("Incorrect chain selected.");
+        }
       }
     }
 
