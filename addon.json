@@ -3,16 +3,12 @@
   "type": "plugin",
   "name": "Metapro Plugin",
   "id": "MetaproPlugin",
-  "version": "1.4.0.4",
+  "version": "1.5.0.0",
   "author": "metapro",
   "website": "https://metapro.one/",
   "documentation": "https://metapro.one/",
   "description": "Metapro Plugin addon for Web 3 connection.",
-  "editor-scripts": [
-    "plugin.js",
-    "type.js",
-    "instance.js"
-  ],
+  "editor-scripts": ["plugin.js", "type.js", "instance.js"],
   "file-list": [
     "c3runtime/actions.js",
     "c3runtime/plugin.js",
