@@ -122,6 +122,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     // Map specific error messages to user-friendly messages
     switch (true) {
       case errorMsg.includes("transfer amount exceeds balance"):
+      case errorMsg.includes("insufficient funds"):
         msg = "Insufficient funds to complete the transaction.";
         break;
       case errorMsg === "Error: Incorrect chain selected.":
@@ -138,7 +139,7 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         break;
     }
 
-    console.log(`Error message to display ${msg}`);
+    console.log(`Error message to display: ${msg}`);
 
     this._errorMsg = msg;
     this._triggerError = true;
@@ -1658,6 +1659,11 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
       let transaction;
 
       if (!token_address) {
+        const nativeBalance = await web3.eth.getBalance(this._account);
+        if (nativeBalance < amountInBigInt) {
+          throw new Error("transfer amount exceeds balance");
+        }
+
         const tx = {
           from: this._account,
           to: receiver,
@@ -1672,6 +1678,12 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
         });
       } else {
         const contract = new web3.eth.Contract(abi, token_address);
+
+        const balance = await contract.methods.balanceOf(this._account).call();
+        if (balance < amountInBigInt) {
+          throw new Error("transfer amount exceeds balance");
+        }
+
         const estimatedGas = await contract.methods
           .transfer(receiver, amountInBigInt)
           .estimateGas({
