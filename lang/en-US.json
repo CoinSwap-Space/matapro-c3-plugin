@@ -473,7 +473,7 @@
           },
           "send-crypto": {
             "list-name": "Send crypto",
-            "display-text": "Send {1} amount of tokens from contract address {0} to receiver {2} on chain ID {3}",
+            "display-text": "Send {1} amount of tokens from contract address {0} to receiver {2} on chain ID {3} using the provided ABI {4}",
             "description": "Sends cryptocurrency from the specified contract address to a receiver, including the amount and target chain ID.",
             "params": {
               "token-address": {
@@ -491,6 +491,10 @@
               "chain-id": {
                 "name": "Chain ID",
                 "desc": "The target blockchain network ID, provided as a decimal."
+              },
+              "abi": {
+                "name": "ABI",
+                "desc": "The Application Binary Interface (ABI) of the token contract, required to interact with its functions. The ABI must include definitions for the 'transfer' and 'balanceOf' methods."
               }
             }
           }

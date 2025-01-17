@@ -1625,32 +1625,32 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
     }
   }
 
-  async _SendCrypto(token_address, amount, receiver, chain_id) {
-    const abi = [
-      {
-        constant: false,
-        inputs: [
-          { name: "_to", type: "address" },
-          { name: "_value", type: "uint256" },
-        ],
-        name: "transfer",
-        outputs: [{ name: "", type: "bool" }],
-        type: "function",
-      },
-      {
-        constant: true,
-        inputs: [{ name: "_owner", type: "address" }],
-        name: "balanceOf",
-        outputs: [{ name: "balance", type: "uint256" }],
-        type: "function",
-      },
-    ];
+  async _SendCrypto(token_address, amount, receiver, chain_id, abi) {
+    const requiredMethods = ["balanceOf", "transfer"];
+    const parsedAbi = JSON.parse(abi);
 
     this._transactionStatus = "pending";
     try {
       if (!this._account) {
         throw new Error("Account information is missing or not initialized.");
       }
+
+      // Ensure ABI is an array
+      if (!Array.isArray(parsedAbi)) {
+        throw new Error("Invalid ABI format. Expected an array.");
+      }
+
+      // Check each required method
+      const methodDefinitions = {};
+      requiredMethods.forEach((methodName) => {
+        const methodAbi = parsedAbi.find(
+          (method) => method.name === methodName
+        );
+        if (!methodAbi) {
+          throw new Error(`Method ${methodName} not found in ABI`);
+        }
+        methodDefinitions[methodName] = methodAbi;
+      });
 
       await this.PostToDOMAsync("switch-chain", chain_id);
 
@@ -1677,26 +1677,32 @@ C3.Plugins.MetaproPlugin.Instance = class MetaproPluginInstance extends (
           gasPrice: currentGasPrice,
         });
       } else {
-        const contract = new web3.eth.Contract(abi, token_address);
+        const contract = new web3.eth.Contract(parsedAbi, token_address);
 
         const balance = await contract.methods.balanceOf(this._account).call();
         if (balance < amountInBigInt) {
           throw new Error("transfer amount exceeds balance");
         }
 
+        // Get parameter order for the transfer method
+        const transferInputs = methodDefinitions["transfer"].inputs;
+
+        // Dynamically order arguments based on ABI
+        const transferArgs = transferInputs.map((input) =>
+          input.type === "address" ? receiver : amountInBigInt
+        );
+
         const estimatedGas = await contract.methods
-          .transfer(receiver, amountInBigInt)
+          .transfer(...transferArgs)
           .estimateGas({
             from: this._account,
           });
 
-        transaction = await contract.methods
-          .transfer(receiver, amountInBigInt)
-          .send({
-            from: this._account,
-            gas: estimatedGas,
-            gasPrice: currentGasPrice,
-          });
+        transaction = await contract.methods.transfer(...transferArgs).send({
+          from: this._account,
+          gas: estimatedGas,
+          gasPrice: currentGasPrice,
+        });
       }
 
       this._lastTransactionHash = transaction.transactionHash;
