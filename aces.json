@@ -305,7 +305,8 @@
           { "id": "token-address", "type": "string" },
           { "id": "amount", "type": "string" },
           { "id": "receiver", "type": "string" },
-          { "id": "chain-id", "type": "number" }
+          { "id": "chain-id", "type": "number" },
+          { "id": "abi", "type": "string" }
         ]
       }
     ],
